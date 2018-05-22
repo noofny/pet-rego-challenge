@@ -1,0 +1,35 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetRego.Api", "PetRego.Api\PetRego.Api.csproj", "{4AFB75CC-1730-443A-8244-563FAE724F36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetRego.UnitTests", "PetRego.UnitTests\PetRego.UnitTests.csproj", "{E6EA4369-FBE5-452C-AE62-441080CBFD10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetRego.Models", "PetRego.Models\PetRego.Models.csproj", "{07C7E8B6-E5B7-45C1-BB14-F0519F12EEAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetRego.Data", "PetRego.Data\PetRego.Data.csproj", "{95514966-7A9C-4065-8692-67A614D9CFE1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4AFB75CC-1730-443A-8244-563FAE724F36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AFB75CC-1730-443A-8244-563FAE724F36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AFB75CC-1730-443A-8244-563FAE724F36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AFB75CC-1730-443A-8244-563FAE724F36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6EA4369-FBE5-452C-AE62-441080CBFD10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6EA4369-FBE5-452C-AE62-441080CBFD10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6EA4369-FBE5-452C-AE62-441080CBFD10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6EA4369-FBE5-452C-AE62-441080CBFD10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07C7E8B6-E5B7-45C1-BB14-F0519F12EEAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07C7E8B6-E5B7-45C1-BB14-F0519F12EEAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07C7E8B6-E5B7-45C1-BB14-F0519F12EEAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07C7E8B6-E5B7-45C1-BB14-F0519F12EEAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95514966-7A9C-4065-8692-67A614D9CFE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95514966-7A9C-4065-8692-67A614D9CFE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95514966-7A9C-4065-8692-67A614D9CFE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95514966-7A9C-4065-8692-67A614D9CFE1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
