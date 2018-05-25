@@ -67,13 +67,19 @@ Some notes:
 
 Todo.
 
-### Technologies Used
+### Decisions & Challenges
 
-Todo.
+- I chose to use a containerized ELK stack (ElasticSearch, Lucene, Kibana) for the data persistence layer. Possibly a contentious decision, I chose this as a learning excersie and to provide some fun with data visualizations which are available "out of the box" with Kibana.
+- DotNetCore - purely as a learning exercise.
 
 ### Architecture
 
 Todo.
+
+### Assumptions, Notes and Stuff
+
+- An assumption was made that it is safe for error/exception detail to be returned to failed API cals. In most production scenarios, it is often wise to abstract this detail and provide a standardised set of error codes which can be referenced via API documentation. This is often done sue to the high chance of inadvertantly exposing personally identifyable information (PII) or other sensitive data via exceptions/stack traces etc. 
+
 
 ## Setup
 
@@ -91,4 +97,13 @@ Todo.
 
 ## References & Inspiration
 
-Todo.
+- [HATEOAS Wiki](https://en.wikipedia.org/wiki/HATEOAS)
+- [RFC5988 (web linking) @ IETF ](https://tools.ietf.org/html/rfc5988)
+- [Link Relations](https://www.iana.org/assignments/link-relations/link-relations.xml)
+- [existing rel values](http://microformats.org/wiki/existing-rel-values)
+- [Generating Hypermedia links in ASP.NET Web API](http://benfoster.io/blog/generating-hypermedia-links-in-aspnet-web-api)
+- [Building Hypermedia Web APIs with ASP.NET Web API](https://msdn.microsoft.com/en-us/magazine/jj883957.aspx)
+- [Hypermedia links with Servicestack new API](https://stackoverflow.com/questions/18351944/hypermedia-links-with-servicestack-new-api)
+- [HTTP status code for update and delete?](https://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete)
+- [http-decision-diagram](https://github.com/for-GET/http-decision-diagram)
+- [Postman Docs - Dynamic Variables](https://www.getpostman.com/docs/v6/postman/environments_and_globals/variables#dynamic-variables)

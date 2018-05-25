@@ -1,0 +1,27 @@
+{
+  "id": "18a21673-5312-7805-06e2-ba6545481441",
+  "name": "pet-rego-localhost",
+  "values": [
+    {
+      "enabled": true,
+      "key": "base-uri",
+      "value": "http://localhost",
+      "type": "text"
+    },
+    {
+      "enabled": true,
+      "key": "port",
+      "value": "5000",
+      "type": "text"
+    },
+    {
+      "enabled": true,
+      "key": "api-path",
+      "value": "api",
+      "type": "text"
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2018-05-24T09:59:20.683Z",
+  "_postman_exported_using": "Postman/6.1.2"
+}

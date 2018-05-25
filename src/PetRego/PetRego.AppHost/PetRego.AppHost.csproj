@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+    <Folder Include="Contollers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="NEST" Version="6.1.0" />
+    <PackageReference Include="NEST.JsonNetSerializer" Version="6.1.0" />
+    <PackageReference Include="Autofac" Version="4.8.1" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.2" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PetRego.Data\PetRego.Data.csproj" />
+    <ProjectReference Include="..\PetRego.Models\PetRego.Models.csproj" />
+    <ProjectReference Include="..\PetRego.Common\PetRego.Common.csproj" />
+    <ProjectReference Include="..\PetRego.Api\PetRego.Api.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Container.cs" />
+  </ItemGroup>
+</Project>

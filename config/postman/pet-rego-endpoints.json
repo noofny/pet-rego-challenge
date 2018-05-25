@@ -1,0 +1,186 @@
+{
+	"info": {
+		"_postman_id": "07060b1b-27c9-d34c-9560-e28ff448b9b1",
+		"name": "pet-rego-challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "api/pet/get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/pet",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}",
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/pet/get/id",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "",
+						"value": ""
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/pet/1234567890",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}",
+						"pet",
+						"1234567890"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/owner/get/id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/eef932c1-499d-4502-af73-def33dc38c90",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}",
+						"owner",
+						"eef932c1-499d-4502-af73-def33dc38c90"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/owner/get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}",
+						"owner"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/owner/post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"EmailAddress\": \"test-2@test.com\",\n    \"FirstName\": \"Test Two\",\n    \"LastName\": \"Tester\",\n    \"DateOfBirth\": \"2000-05-20T00:00:00Z\",\n    \"Address\": {\n    \t\"Country\": \"Australia\",\n    \t\"State\": \"NSW\",\n    \t\"City\": \"Sydney\",\n    \t\"StreetName\": \"Sydney St\",\n    \t\"StreetNumber\": \"1\",\n    \t\"PostCode\": \"2000\"\n    } \n}"
+				},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}",
+						"owner"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/owner/put/id",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"Id\": \"eef932c1-499d-4502-af73-def33dc38c90\",\n    \"EmailAddress\": \"test-new@test.com\",\n    \"FirstName\": \"Test New New 2\",\n    \"LastName\": \"Tester\",\n    \"DateOfBirth\": \"2000-05-20T00:00:00Z\",\n    \"Address\": {\n    \t\"Country\": \"Australia\",\n    \t\"State\": \"NSW\",\n    \t\"City\": \"Sydney\",\n    \t\"StreetName\": \"Sydney St\",\n    \t\"StreetNumber\": \"1\",\n    \t\"PostCode\": \"2000\"\n    } \n}"
+				},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/eef932c1-499d-4502-af73-def33dc38c90",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}",
+						"owner",
+						"eef932c1-499d-4502-af73-def33dc38c90"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/owner/delete/id",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/37b98a90-5416-4379-b031-b80ee31e8922",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}",
+						"owner",
+						"37b98a90-5416-4379-b031-b80ee31e8922"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
