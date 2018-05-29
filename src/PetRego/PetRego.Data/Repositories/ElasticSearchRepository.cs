@@ -9,12 +9,7 @@ using PetRego.Common;
 
 namespace PetRego.Data
 {
-    public interface IElasticClientFactory<T> where T : IEntity
-    {
-        IElasticClient GetClient(string instanceUri);
-    }
-
-    public class ElasticClientFactory<T> : IElasticClientFactory<T> where T : IEntity
+    public class ElasticClientFactory<T> where T : IEntity
     {
         const string IndexPrefix = "petrego";
 
@@ -42,10 +37,18 @@ namespace PetRego.Data
     public class ElasticSearchRepository<T> : IRepository<T> where T : class, IEntity
     {
         readonly IElasticClient _client;
+        readonly string _defaultIndex;
+        const long WriteConflictRetries = 2;
 
-        public ElasticSearchRepository(IElasticClientFactory<T> clientFactory, IAppConfig appConfig)
+        public ElasticSearchRepository(ElasticClientFactory<T> clientFactory, IAppConfig appConfig)
         {
             _client = clientFactory.GetClient(appConfig.ElasticSearchUri);
+            _defaultIndex = _client.ConnectionSettings != null ? _client.ConnectionSettings.DefaultIndex : string.Empty;
+        }
+        public ElasticSearchRepository(IElasticClient client)
+        {
+            _client = client;
+            _defaultIndex = _client.ConnectionSettings != null ? _client.ConnectionSettings.DefaultIndex : string.Empty;
         }
 
 
@@ -70,7 +73,7 @@ namespace PetRego.Data
 
         public async Task<List<T>> List()
         {
-            var indexResponse = await _client.IndexExistsAsync(_client.ConnectionSettings.DefaultIndex);
+            var indexResponse = await _client.IndexExistsAsync(_defaultIndex);
             if (!indexResponse.IsValid)
             {
                 throw new DataException<T>(
@@ -120,7 +123,7 @@ namespace PetRego.Data
             var response = await _client.UpdateAsync<T, object>(entity.Id, u => u
                 .Doc(entity)
                 .Upsert(entity)
-                .RetryOnConflict(2) // brute force optimistic concurrency
+                .RetryOnConflict(WriteConflictRetries) // brute force optimistic concurrency
             );
             if (response.Result != Result.Updated || !response.IsValid)
             {
@@ -135,7 +138,7 @@ namespace PetRego.Data
 
         public async Task Delete(string id)
         {
-            var indexResponse = await _client.IndexExistsAsync(_client.ConnectionSettings.DefaultIndex);
+            var indexResponse = await _client.IndexExistsAsync(_defaultIndex);
             if (!indexResponse.IsValid)
             {
                 throw new DataException<T>(
@@ -164,7 +167,7 @@ namespace PetRego.Data
 
         public async Task DeleteAll()
         {
-            var indexResponse = await _client.IndexExistsAsync(_client.ConnectionSettings.DefaultIndex);
+            var indexResponse = await _client.IndexExistsAsync(_defaultIndex);
             if (!indexResponse.IsValid)
             {
                 throw new DataException<T>(
@@ -178,7 +181,7 @@ namespace PetRego.Data
             {
                 return;
             }
-            var deleteResponse = await _client.DeleteIndexAsync(_client.ConnectionSettings.DefaultIndex);
+            var deleteResponse = await _client.DeleteIndexAsync(_defaultIndex);
             if (!deleteResponse.IsValid)
             {
                 throw new DataException<T>(
@@ -208,19 +211,19 @@ namespace PetRego.Data
                     return Models.Result.Created;
 
                 case Result.Deleted:
-                    return Models.Result.Created;
+                    return Models.Result.Deleted;
 
                 case Result.Error:
-                    return Models.Result.Created;
+                    return Models.Result.Error;
 
                 case Result.Noop:
-                    return Models.Result.Created;
+                    return Models.Result.Noop;
 
                 case Result.NotFound:
-                    return Models.Result.Created;
+                    return Models.Result.NotFound;
 
                 case Result.Updated:
-                    return Models.Result.Created;
+                    return Models.Result.Updated;
 
                 default:
                     return Models.Result.Unsupported;

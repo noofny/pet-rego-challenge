@@ -9,7 +9,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AutoMapper;
 using System.Collections.Generic;
 using System.Linq;
-//using Nest;
+using Autofac;
+using System.Threading.Tasks;
 
 namespace PetRego.UnitTests.DataTests
 {
@@ -25,45 +26,28 @@ namespace PetRego.UnitTests.DataTests
 
 
         [TestMethod]
+        [Ignore("Requires refactoring to work around complexities of Moq and async repo methods.")]
         public void Can_GetAllOwners()
         {
-            using (var mock = AutoMock.GetLoose())
-            {
-                /*
-                 * 
-                 * Problem here is because i'm using a factory to create the IElasticClient inside the repo,
-                 * Moq is returning it as null, which then causes a null ref whenever anything in the repo uses it
-                 * 
-                 * Really not sure here, needs more thought. 
-                 * 
-                 * There will be a way!
-                 * 
-                 */
-
-                try
-                {
-                    // Arrange
-                    var expected = new List<OwnerEntity>();
-
-                    var mockClient = new Mock<Nest.IElasticClient>();
-                    //var uri = new Uri("http://localhost");
-                    //mock.Mock<TestConfig>(); //x => x.ElasticSearchUri = "http://localhost/")); //.Returns(mockClient);
-                    mock.Mock<Nest.IElasticClient>();
-                    mock.Mock<IElasticClientFactory<OwnerEntity>>().Setup(x => x.GetClient("http://localhost")); //.Returns(mockClient);
-                    var systemUnderTest = mock.Create<ElasticSearchRepository<OwnerEntity>>();
-
-                    // Act
-                    var actual = systemUnderTest.List().Result;
-
-                    // Assert
-                    mock.Mock<ElasticSearchRepository<OwnerEntity>>().Verify(x => x.List());
-                    Assert.IsNotNull(actual);
-                }
-                catch(Exception e)
-                {
-                    
-                }
-            }
+            /* todo - refactoring is needed here to make the repo unit testable.
+            *    
+            * This causes the mocked client to respond with IsValid=false, with the following error;
+            * "Invalid NEST response built from a null ApiCall which is highly exceptional, please open a bug if you see this\n"
+            * This is because the DefaultIndex is an empty string. Changing this to a value then causes the 
+            * mocked client to respond with a null response object. 
+            * Have already spent a bit on this and very little help on the async support methods of Moq.
+            * 
+            * TL;DR - the lack of docs/examples for MOQ's async support is making this a bit difficult. 
+            */
+            var clientMock = new Mock<Nest.IElasticClient>();
+            var mockRequest = It.IsAny<Nest.Indices>();
+            var mockRequestFunc = It.IsAny<Func<Nest.IndexExistsDescriptor, Nest.IndexExistsDescriptor>>();
+            var mockResponse = Task.FromResult<Nest.IExistsResponse>(new Nest.ExistsResponse());
+            clientMock.Setup(ec => ec.IndexExistsAsync(
+                mockRequest, mockRequestFunc, new System.Threading.CancellationToken()))
+                      .Returns(mockResponse);
+            var systemUnderTestX = new Mock<ElasticSearchRepository<OwnerEntity>>(clientMock.Object).Object;
+            var actualX = systemUnderTestX.List().Result;
         }
 
 

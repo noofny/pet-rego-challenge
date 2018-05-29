@@ -69,8 +69,9 @@ Todo.
 
 ### Decisions & Challenges
 
-- I chose to use a containerized ELK stack (ElasticSearch, Lucene, Kibana) for the data persistence layer. Possibly a contentious decision, I chose this as a learning excersie and to provide some fun with data visualizations which are available "out of the box" with Kibana.
+- I chose to use a containerized ELK stack (ElasticSearch, Lucene, Kibana) for the data persistence layer. Possibly a contentious decision, I chose this as a learning exercise and to provide some fun with data visualizations which are available "out of the box" with Kibana.
 - DotNetCore - purely as a learning exercise.
+- Mocking IElasticClient in my repositories proved to be quite difficult, due to combination of using async methods coupled with limitations (or lack of docs/examples) around async handling within the mocking framework I used (Moq). In order not to have this slow the project I flagged as a todo and have moved on.
 
 ### Architecture
 
@@ -78,7 +79,7 @@ Todo.
 
 ### Assumptions, Notes and Stuff
 
-- An assumption was made that it is safe for error/exception detail to be returned to failed API cals. In most production scenarios, it is often wise to abstract this detail and provide a standardised set of error codes which can be referenced via API documentation. This is often done sue to the high chance of inadvertantly exposing personally identifyable information (PII) or other sensitive data via exceptions/stack traces etc. 
+- An assumption was made that it is safe for error/exception detail to be returned to failed API calls. In most production scenarios, it is often wise to abstract this detail and provide a standardized set of error codes which can be referenced via API documentation. This is often done sue to the high chance of inadvertently exposing personally identifiable information (PII) or other sensitive data via exceptions/stack traces etc.
 
 
 ## Setup

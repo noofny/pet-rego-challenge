@@ -43,17 +43,17 @@ namespace PetRego.UnitTests.ContainerTests
         }
 
         [TestMethod]
-        public void Can_Resolve_IElasticClientFactory_OwnerEntity()
+        public void Can_Resolve_ElasticClientFactory_OwnerEntity()
         {
-            var component = TestContainer.Container.Resolve<IElasticClientFactory<OwnerEntity>>();
+            var component = TestContainer.Container.Resolve<ElasticClientFactory<OwnerEntity>>();
 
             Assert.IsNotNull(component);
         }
 
         [TestMethod]
-        public void Can_Resolve_IElasticClientFactory_PetEntity()
+        public void Can_Resolve_ElasticClientFactory_PetEntity()
         {
-            var component = TestContainer.Container.Resolve<IElasticClientFactory<PetEntity>>();
+            var component = TestContainer.Container.Resolve<ElasticClientFactory<PetEntity>>();
 
             Assert.IsNotNull(component);
         }

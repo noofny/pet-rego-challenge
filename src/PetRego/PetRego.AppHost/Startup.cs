@@ -49,8 +49,8 @@ namespace PetRego.Api
             // todo - would be more graceful to register these based on some reflection magic...
             builder.RegisterType<ElasticSearchRepository<OwnerEntity>>().As<IRepository<OwnerEntity>>();
             builder.RegisterType<ElasticSearchRepository<PetEntity>>().As<IRepository<PetEntity>>();
-            builder.RegisterType<ElasticClientFactory<OwnerEntity>>().As<IElasticClientFactory<OwnerEntity>>();;
-            builder.RegisterType<ElasticClientFactory<PetEntity>>().As<IElasticClientFactory<PetEntity>>(); ;
+            builder.RegisterType<ElasticClientFactory<OwnerEntity>>();
+            builder.RegisterType<ElasticClientFactory<PetEntity>>();
             builder.RegisterType<OwnerService>();
 
             ApplicationContainer = builder.Build();

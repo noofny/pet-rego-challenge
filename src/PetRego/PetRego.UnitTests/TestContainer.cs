@@ -22,14 +22,8 @@ namespace PetRego.Api
             builder.RegisterInstance(new TestConfig()).As<IAppConfig>();
             builder.RegisterType<ElasticSearchRepository<OwnerEntity>>().As<IRepository<OwnerEntity>>();
             builder.RegisterType<ElasticSearchRepository<PetEntity>>().As<IRepository<PetEntity>>();
-
-            builder.RegisterType<ElasticClientFactory<OwnerEntity>>().As<IElasticClientFactory<OwnerEntity>>(); ;
-            builder.RegisterType<ElasticClientFactory<PetEntity>>().As<IElasticClientFactory<PetEntity>>(); ;
-
-            builder.RegisterType<ElasticClientFactory<OwnerEntity>>().As<IElasticClientFactory<OwnerEntity>>(); ;
-            builder.RegisterType<ElasticClientFactory<PetEntity>>().As<IElasticClientFactory<PetEntity>>(); ;
-
-
+            builder.RegisterType<ElasticClientFactory<OwnerEntity>>();
+            builder.RegisterType<ElasticClientFactory<PetEntity>>();
             builder.RegisterType<OwnerService>();
 
             Container = builder.Build();
