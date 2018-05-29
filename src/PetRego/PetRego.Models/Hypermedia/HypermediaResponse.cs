@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace PetRego.Models
 {
-    public abstract class HypermediaResponseBase
+    public abstract class HypermediaResponse
     {
         readonly List<Link> _links = new List<Link>();
 
@@ -14,7 +14,7 @@ namespace PetRego.Models
 
         public Result Result { get; private set; }
 
-        protected HypermediaResponseBase(Result result)
+        protected HypermediaResponse(Result result)
         {
             Result = result;
         }
