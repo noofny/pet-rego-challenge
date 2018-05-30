@@ -25,7 +25,7 @@ namespace PetRego.Api
                 var models = Mapper.Map<List<OwnerModel>>(entities);
                 return new MultiResponse(models.OfType<IModel>().ToList(), Result.Success);
             }
-            catch(DataException<IEntity> ex)
+            catch(DataException<OwnerEntity> ex)
             {
                 return new MultiResponse($"{ex.Message}", ex.Result);
             }
@@ -43,7 +43,7 @@ namespace PetRego.Api
                 var model = Mapper.Map<OwnerModel>(entity);
                 return new SingleResponse(model, Result.Success);
             }
-            catch (DataException<IEntity> ex)
+            catch (DataException<OwnerEntity> ex)
             {
                 return new SingleResponse($"{ex.Message}", ex.Result);
             }
@@ -58,10 +58,10 @@ namespace PetRego.Api
             try
             {
                 var entity = Mapper.Map<OwnerEntity>(owner);
-                await OwnerRepository.Add(entity);
-                return new BasicResponse(Result.Created);
+                var added = await OwnerRepository.Add(entity);
+                return new BasicResponse(added ? Result.Created : Result.Noop);
             }
-            catch (DataException<IEntity> ex)
+            catch (DataException<OwnerEntity> ex)
             {
                 return new BasicResponse($"{ex.Message}", ex.Result);
             }
@@ -76,10 +76,10 @@ namespace PetRego.Api
             try
             {
                 var entity = Mapper.Map<OwnerEntity>(owner);
-                await OwnerRepository.Update(entity);
-                return new BasicResponse(Result.Updated);
+                var updated = await OwnerRepository.Update(entity);
+                return new BasicResponse(updated ? Result.Updated : Result.Noop);
             }
-            catch (DataException<IEntity> ex)
+            catch (DataException<OwnerEntity> ex)
             {
                 return new BasicResponse($"{ex.Message}", ex.Result);
             }
@@ -93,10 +93,10 @@ namespace PetRego.Api
         {
             try
             {
-                await OwnerRepository.Delete(id);
-                return new BasicResponse(Result.Deleted);
+                var deleted = await OwnerRepository.Delete(id);
+                return new BasicResponse(deleted ? Result.Deleted : Result.Noop);
             }
-            catch (DataException<IEntity> ex)
+            catch (DataException<OwnerEntity> ex)
             {
                 return new BasicResponse($"{ex.Message}", ex.Result);
             }

@@ -56,6 +56,10 @@ namespace PetRego.Data
 
         public async Task<T> Get(string id)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
             var response = await _client.SearchAsync<T>(s => s
                 .Query(q => q.Match(m => m.Field(f => f.Id).Query(id)))
             );
@@ -103,10 +107,10 @@ namespace PetRego.Data
             return listResponse.Documents.ToList();
         }
 
-        public async Task Add(T entity)
+        public async Task<bool> Add(T entity)
         {
-            entity.Id = Guid.NewGuid().ToString();
-            var response = await _client.IndexDocumentAsync(entity);
+            //            entity.Id = Guid.NewGuid().ToString();
+            var response = await _client.IndexDocumentAsync(new OwnerEntity());
             if (response.Result != Result.Created || !response.IsValid)
             {
                 throw new DataException<T>(
@@ -116,9 +120,10 @@ namespace PetRego.Data
                     response.OriginalException
                 );
             }
+            return true;
         }
 
-        public async Task Update(T entity)
+        public async Task<bool> Update(T entity)
         {
             var response = await _client.UpdateAsync<T, object>(entity.Id, u => u
                 .Doc(entity)
@@ -134,9 +139,10 @@ namespace PetRego.Data
                     response.OriginalException
                 );
             }
+            return true;
         }
 
-        public async Task Delete(string id)
+        public async Task<bool> Delete(string id)
         {
             var indexResponse = await _client.IndexExistsAsync(_defaultIndex);
             if (!indexResponse.IsValid)
@@ -151,7 +157,7 @@ namespace PetRego.Data
             if (!indexResponse.Exists)
             {
                 // index doesn't exist - nothing to do
-                return;
+                return false;
             }
             var deleteResponse = await _client.DeleteAsync<T>(id);
             if (!deleteResponse.IsValid && deleteResponse.Result != Result.NotFound)
@@ -163,9 +169,10 @@ namespace PetRego.Data
                     deleteResponse.OriginalException
                 );
             }
+            return true;
         }
 
-        public async Task DeleteAll()
+        public async Task<bool> DeleteAll()
         {
             var indexResponse = await _client.IndexExistsAsync(_defaultIndex);
             if (!indexResponse.IsValid)
@@ -179,7 +186,8 @@ namespace PetRego.Data
             }
             if (!indexResponse.Exists)
             {
-                return;
+                // index doesn't exist - nothing to do
+                return false;
             }
             var deleteResponse = await _client.DeleteIndexAsync(_defaultIndex);
             if (!deleteResponse.IsValid)
@@ -191,6 +199,7 @@ namespace PetRego.Data
                     deleteResponse.OriginalException
                 );
             }
+            return true;
         }
 
 

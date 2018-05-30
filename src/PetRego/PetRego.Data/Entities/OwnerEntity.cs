@@ -12,6 +12,11 @@ namespace PetRego.Data
         public DateTime? DateOfBirth { get; set; }
         public Address Address { get; set; }
 
+        public OwnerEntity()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+
     }
 
 }
