@@ -9,7 +9,5 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Response\" />
-    <Folder Include="Misc\" />
-    <Folder Include="Hypermedia\" />
   </ItemGroup>
 </Project>

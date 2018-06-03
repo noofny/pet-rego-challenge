@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PetRego.Models;
 using System.Net;
 using PetRego.Api;
+using System.Net.Http;
 
 namespace PetRego.AppHost
 {
@@ -20,6 +21,12 @@ namespace PetRego.AppHost
         public async Task<MultiResponse> Get()
         {
             var response = await OwnerService.GetAll();
+            response.Links.Add(Link.Self($"{GetBaseUrl()}", Request.Method));
+            response.Links.Add(Link.Edit($"{GetBaseUrl()}/{{id}}", HttpMethod.Put.Method));
+            response.Links.Add(Link.Delete($"{GetBaseUrl()}/{{id}}", HttpMethod.Delete.Method));
+            response.Links.Add(Link.Custom("get", $"{GetBaseUrl()}/{{id}}", HttpMethod.Get.Method));
+            response.Links.Add(Link.Custom("create", $"{GetBaseUrl()}", HttpMethod.Post.Method));
+
             if (response.Failed)
             {
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -41,6 +48,12 @@ namespace PetRego.AppHost
             }
 
             var response = await OwnerService.GetById(id);
+            response.Links.Add(Link.Self($"{GetBaseUrl()}/{id}", Request.Method));
+            response.Links.Add(Link.Edit($"{GetBaseUrl()}/{id}", HttpMethod.Put.Method));
+            response.Links.Add(Link.Delete($"{GetBaseUrl()}/{id}", HttpMethod.Delete.Method));
+            response.Links.Add(Link.Custom("get", $"{GetBaseUrl()}", HttpMethod.Get.Method));
+            response.Links.Add(Link.Custom("create", $"{GetBaseUrl()}", HttpMethod.Post.Method));
+
             if (response.Failed)
             {
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -58,6 +71,12 @@ namespace PetRego.AppHost
             // todo - validate given request object and return 400(BadRequest) if it fails.  
 
             var response = await OwnerService.Create(owner);
+            response.Links.Add(Link.Self($"{GetBaseUrl()}", Request.Method));
+            response.Links.Add(Link.Edit($"{GetBaseUrl()}/{{id}}", HttpMethod.Put.Method));
+            response.Links.Add(Link.Delete($"{GetBaseUrl()}/{{id}}", HttpMethod.Delete.Method));
+            response.Links.Add(Link.Custom("get", $"{GetBaseUrl()}", HttpMethod.Get.Method));
+            response.Links.Add(Link.Custom("get", $"{GetBaseUrl()}/{{id}}", HttpMethod.Get.Method));
+
             if (response.Failed)
             {
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -82,6 +101,12 @@ namespace PetRego.AppHost
 
             owner.Id = id;
             var response = await OwnerService.Update(owner);
+            response.Links.Add(Link.Self($"{GetBaseUrl()}/{id}", Request.Method));
+            response.Links.Add(Link.Delete($"{GetBaseUrl()}/{id}", HttpMethod.Delete.Method));
+            response.Links.Add(Link.Custom("create", $"{GetBaseUrl()}", HttpMethod.Post.Method));
+            response.Links.Add(Link.Custom("get", $"{GetBaseUrl()}", HttpMethod.Get.Method));
+            response.Links.Add(Link.Custom("get", $"{GetBaseUrl()}/{id}", HttpMethod.Get.Method));
+
             if (response.Failed)
             {
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -104,6 +129,12 @@ namespace PetRego.AppHost
             }
 
             var response = await OwnerService.Delete(id);
+            response.Links.Add(Link.Self($"{GetBaseUrl()}/{id}", Request.Method));
+            response.Links.Add(Link.Edit($"{GetBaseUrl()}/{id}", HttpMethod.Put.Method));
+            response.Links.Add(Link.Custom("create", $"{GetBaseUrl()}", HttpMethod.Post.Method));
+            response.Links.Add(Link.Custom("get", $"{GetBaseUrl()}", HttpMethod.Get.Method));
+            response.Links.Add(Link.Custom("get", $"{GetBaseUrl()}/{id}", HttpMethod.Get.Method));
+
             if (response.Failed)
             {
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -115,6 +146,12 @@ namespace PetRego.AppHost
             }
             return response;
         }
+
+        string GetBaseUrl()
+        {
+            return $"{Request.Scheme}://{Request.Host}{Request.Path}";
+        }
+
 
     }
 }
