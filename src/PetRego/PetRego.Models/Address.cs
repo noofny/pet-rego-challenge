@@ -2,7 +2,6 @@
 
 namespace PetRego.Models
 {
-    // todo - move this somewhere better
     public class Address
     {
         public string Country { get; set; }
