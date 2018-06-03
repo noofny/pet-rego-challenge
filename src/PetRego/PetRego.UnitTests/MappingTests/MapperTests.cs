@@ -71,7 +71,7 @@ namespace PetRego.UnitTests.MappingTests
                 Description = "Grey with blue spots",
                 Name = "Jubjub",
                 OwnerId = Guid.NewGuid().ToString(),
-                Type = "Cat",
+                Type = PetType.Cat,
                 DateOfBirth = DateTime.Now.Subtract(TimeSpan.FromDays(rnd.Next(1, 9999))),
             };
             var target = Mapper.Map<PetEntity, PetModel>(source);
@@ -144,7 +144,7 @@ namespace PetRego.UnitTests.MappingTests
                 Description = "Grey with blue spots",
                 Name = "Jubjub",
                 OwnerId = Guid.NewGuid().ToString(),
-                Type = "Cat",
+                Type = PetType.Cat,
                 DateOfBirth = DateTime.Now.Subtract(TimeSpan.FromDays(rnd.Next(1, 9999))),
             };
             var target = Mapper.Map<PetModel, PetEntity>(source);

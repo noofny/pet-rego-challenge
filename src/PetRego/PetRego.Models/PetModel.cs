@@ -1,4 +1,6 @@
 ﻿using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace PetRego.Models
 {
@@ -6,7 +8,8 @@ namespace PetRego.Models
     {
         public string Id { get; set; }
         public string OwnerId { get; set; }
-        public string Type { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PetType Type { get; set; }
         public string Breed { get; set; }
         public string Description { get; set; }
         public string Name { get; set; }
