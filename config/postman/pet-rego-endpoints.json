@@ -97,6 +97,25 @@
 			"response": []
 		},
 		{
+			"name": "api/get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "api/owner/post",
 			"request": {
 				"method": "POST",
