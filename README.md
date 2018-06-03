@@ -2,7 +2,7 @@
 
 <img src="./pics/logo-petshop.png">
 
-This project is a response to a technical challenge. It is by no means a production system, however is intended as a demonstration of my ability to respond to a specific brief and stretch my technical capabilities within a limited timeframe.
+This project is a response to a technical challenge. It is by no means a production system, however is intended as a demonstration of my ability to respond to a specific brief and stretch my technical capabilities within a limited time-frame.
 
 <img height="100px" src="./pics/logo-brief.png">
 
@@ -65,11 +65,11 @@ Some notes:
 
 ## The Approach
 
-I decided to build an API using WebApi on DotNetCore and leverage a few technologies not previously familiar with in order to learn and challenge myself. The solution is not complete or production-ready by any means, but hopefully shows understanding not only the brief but of SOLID principlas and REST architecture.
+I decided to build an API using WebApi on DotNetCore and leverage a few technologies not previously familiar with in order to learn and challenge myself. The solution is not complete or production-ready by any means, but hopefully shows understanding not only the brief but of SOLID principles and REST architecture.
 
 ### Decisions & Challenges
 
-- I chose to build a WebAPI project using DotNetCore. This was purely to learn the framework as I beliebe it is a strongly emerging technology for good reasons.
+- I chose to build a WebAPI project using DotNetCore. This was purely to learn the framework as I believe it is a strongly emerging technology for good reasons.
 - I chose to use a containerized ELK stack (ElasticSearch, Lucene, Kibana) for the data persistence layer. Possibly a contentious decision, I chose this as a learning exercise and to provide some fun with data visualizations which are available "out of the box" with Kibana.
 - Mocking IElasticClient in my repositories proved to be a challenge, due to a lack of experience/docs/examples (or limitations) around async handling within the mocking framework I used (Moq). In order not to have this slow delivery I flagged as a todo item.
 
@@ -89,7 +89,7 @@ Some rules around what versioning can be applied to might be;
 
 Generally it seems that API versioning is approached by applying a versioning strategy, often along with a change strategy. Versioning is often an implementation specific approach possibly with some rules, with a change strategy involving also a set of rules and operational processes. I believe this is a salient approach and often works pragmatically, however I question the implementation-specific details. A set of general rules I feel is appropriate for a versioning strategy is;
 
-- The prime goal of versioning is to support breaking changes whilst mainting existing contracts with your consumers. 
+- The prime goal of versioning is to support breaking changes whilst maintaining existing contracts with your consumers. 
 - Clients should not have to upgrade to new versions, it should always be optional.
 - Versioning may also be used for experimental features that may even be short-lived.
 - Versioning should be clear and self-document, it should not be a Rube Goldberg machine.
@@ -122,11 +122,11 @@ api-version: 2
 
 Whilst all of these tend to work in the pragmatic fast-paced and resource-poor world we all work in, I often see the code become a mess of multi-layered versions of services, namespaces, folder structures and it ends being costly and difficult to maintain. 
 
-Moreso than that - it directly breaks contraints [clearly defined](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm) in the REST architecture and [covered off in numerous articles](https://www.infoq.com/articles/roy-fielding-on-versioning/) by the original creator, to not put API version numbers in the URLs, but instead to allow hypermedia to describe when versions of data/docs/formats are available. So whilst the above approaches are pramatic to solve a problem, an API which applies them is no longer RESTful.
+More importantly - it directly breaks constraints [clearly defined](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm) in the REST architecture and [covered off in numerous articles](https://www.infoq.com/articles/roy-fielding-on-versioning/) by the original creator, to not put API version numbers in the URLs, but instead to allow hypermedia to describe when versions of data/docs/formats are available. So whilst the above approaches are pragmatic to solve a problem, an API which applies them is no longer RESTful.
 
 ### Hypermedia
 
-The concept of hypermedia was born over 80 years ago, it's suprising that with the popularity of REST that still the vast majority of RESTful APIs do not adhere to the basic contraints/principals, such as hypermedia (HATEOAS).
+The concept of hypermedia was born over 80 years ago, it's surprising that with the popularity of REST that still the vast majority of RESTful APIs do not adhere to the basic constraints/principals, such as hypermedia (HATEOAS).
 
 An API must be using hypermedia to transfer state and describe itself to a client in order to be considered RESTful, yet it seems this fundamental fact is lost in translation. Most people I ask about what makes an API RESTful still reply by talking about URL structure and HTTP verbs.
 
@@ -142,17 +142,24 @@ Todo.
 
 <img height="100px" src="./pics/logo-setup.png">
 
-Todo.
+Todo...
+- Visual Studio 2017
+- DotNetCore
+- Docker
+- ELK container (seb/elk)
 
 ## Usage
 
-Todo.
+Todo...
+- Build the code
+- Run the code
+- The site runs on localhost on port 5000
 
 ## Future Improvements
 
-- Caching - whilst I understand this to be one of the core constraints of REST architecture, I have ommitted it in order to work within time contraints (plus it wasn't mentioned in the brief). I woukd implement this at the service layer in order to minimize the calls being made to the data source.
-- Authentication - the solution does not implement any authentication as per the brief. The simplest and most common way is basic auth, whereby a set of credentials or a key is sent in the headers and validated on the server prior to performaing any operation. More complex implementations may involve an OAuth flow. One such flow works by the client sending an initial auth request containing set of creds or key which is validated by the server (and possibly with a 3rd party provider) which responds with a session token which may have some expiration time. Subsequent requsts from the client contain this token which is used to maintain verification state. Finally there would be an operation whereby the client can request the token to be 'refreshed' or re-verified based on a set of creds or a key.
-- Unit testing (mocking) of the actual API controllers has not been done due to time contraints. Whilst the controllers are lightweight and contain very little actual logic, they are where I enrich the responses with hypermedia, so this being a core feature of a REST API means it must have test coverage.
+- Caching - whilst I understand this to be one of the core constraints of REST architecture, I have omitted it in order to work within time constraints (plus it wasn't mentioned in the brief). I would implement this at the service layer in order to minimize the calls being made to the data source.
+- Authentication - the solution does not implement any authentication as per the brief. The simplest and most common way is basic auth, whereby a set of credentials or a key is sent in the headers and validated on the server prior to performing any operation. More complex implementations may involve an OAuth flow. One such flow works by the client sending an initial auth request containing set of creds or key which is validated by the server (and possibly with a 3rd party provider) which responds with a session token which may have some expiration time. Subsequent requests from the client contain this token which is used to maintain verification state. Finally there would be an operation whereby the client can request the token to be 'refreshed' or re-verified based on a set of creds or a key.
+- Unit testing (mocking) of the actual API controllers has not been done due to time constraints. Whilst the controllers are lightweight and contain very little actual logic, they are where I enrich the responses with hypermedia, so this being a core feature of a REST API means it must have test coverage.
 
 ## References & Inspiration
 
