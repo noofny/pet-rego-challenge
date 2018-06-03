@@ -109,7 +109,6 @@ namespace PetRego.Data
 
         public async Task<bool> Add(T entity)
         {
-            //            entity.Id = Guid.NewGuid().ToString();
             var response = await _client.IndexDocumentAsync(new OwnerEntity());
             if (response.Result != Result.Created || !response.IsValid)
             {
