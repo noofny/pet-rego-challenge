@@ -59,6 +59,14 @@ namespace PetRego.UnitTests.ContainerTests
         }
 
         [TestMethod]
+        public void Can_Resolve_DiscoveryService()
+        {
+            var component = TestContainer.Container.Resolve<DiscoveryService>();
+
+            Assert.IsNotNull(component);
+        }
+
+        [TestMethod]
         public void Can_Resolve_OwnerService()
         {
             var component = TestContainer.Container.Resolve<OwnerService>();

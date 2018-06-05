@@ -9,6 +9,7 @@
         Created,
         Updated,
         Deleted,
-        Error
+        InternalError,
+        BadRequest
     }
 }

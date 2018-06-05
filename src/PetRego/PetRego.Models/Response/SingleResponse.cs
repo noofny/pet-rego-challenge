@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace PetRego.Models
 {
-    public class SingleResponse : Response
+    public class SingleResponse : Response, IHaveSingleResult
     {
-        public IModel Value { get; private set; }
+        public IModel Data { get; }
 
-        public SingleResponse(IModel value, Result result) : base(result)
-        { 
-            Value = value;
+        public SingleResponse(Result result, Metadata metadata, IModel data) : base(result, metadata)
+        {
+            Data = data;
         }
-        public SingleResponse(string error, Result result) : base(error, result)
+        public SingleResponse(Result result, Metadata metadata, params string[] errors) : base(result, metadata, errors)
         {
         }
     }

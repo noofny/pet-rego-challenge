@@ -222,7 +222,7 @@ namespace PetRego.Data
                     return Models.Result.Deleted;
 
                 case Result.Error:
-                    return Models.Result.Error;
+                    return Models.Result.InternalError;
 
                 case Result.Noop:
                     return Models.Result.Noop;

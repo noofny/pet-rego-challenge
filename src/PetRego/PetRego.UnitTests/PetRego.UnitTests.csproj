@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Compile Remove="UnitTest1.cs" />
+    <Compile Remove="ServiceTests\OwnerServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PetRego.Data\PetRego.Data.csproj" />
@@ -26,7 +27,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataTests\" />
-    <Folder Include="ServiceTests\" />
     <Folder Include="MappingTests\" />
     <Folder Include="ContainerTests\" />
   </ItemGroup>

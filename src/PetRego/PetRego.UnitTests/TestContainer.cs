@@ -24,6 +24,7 @@ namespace PetRego.Api
             builder.RegisterType<ElasticSearchRepository<PetEntity>>().As<IRepository<PetEntity>>();
             builder.RegisterType<ElasticClientFactory<OwnerEntity>>();
             builder.RegisterType<ElasticClientFactory<PetEntity>>();
+            builder.RegisterType<DiscoveryService>();
             builder.RegisterType<OwnerService>();
 
             Container = builder.Build();

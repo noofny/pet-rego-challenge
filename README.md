@@ -108,27 +108,59 @@ https://localhost/api/v2/owner/12345
 #### Query String Param
 ```
 HTTP GET:
-https://localhost/api/owner/12345?api-version=1
-https://localhost/api/owner/12345?api-version=2
+https://localhost/api/owner/12345?version=1
+https://localhost/api/owner/12345?version=2
 ```
 
-#### Custom Request Header
+Whilst all of these tend to work in the pragmatic fast-paced and resource-poor world we all work in, I often see the code become a mess of multi-layered and somewhat duplicated versions of services, namespaces, folder structures and it ends being costly and a pain to maintain. 
+
+More importantly - these directly break [constraints defined](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm) in the REST architecture and have been [covered off in numerous articles](https://www.infoq.com/articles/roy-fielding-on-versioning/) by the original creator, for the following reasons;
+- The URL is the location of a resource, not the version of the response data you want from that resource.
+- The available versions are not discoverable by a client.
+- It isn't clear which version a client should be using or which is the default.
+- Control params may get mixed up with application params.
+
+So whilst these are perfectly acceptable ways to version an API, they should not be used to version a REST API. Using one of the methods below and providing versions of docs/data where available in the response hypermedia is considered RESTful. 
+
+#### Custom Header
 ```
 HTTP GET:
 https://localhost/api/owner/12345
+version: 1
+
+HTTP GET:
 https://localhost/api/owner/12345
-api-version: 2
+version: 2
 ```
 
-Whilst all of these tend to work in the pragmatic fast-paced and resource-poor world we all work in, I often see the code become a mess of multi-layered versions of services, namespaces, folder structures and it ends being costly and difficult to maintain. 
+#### Custom ACCEPT/CONTENT-TYPE Header
+```
+HTTP GET:
+https://localhost/api/owner/12345
+Accept: application/vnd.api.owner+json; version=1
 
-More importantly - it directly breaks constraints [clearly defined](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm) in the REST architecture and [covered off in numerous articles](https://www.infoq.com/articles/roy-fielding-on-versioning/) by the original creator, to not put API version numbers in the URLs, but instead to allow hypermedia to describe when versions of data/docs/formats are available. So whilst the above approaches are pragmatic to solve a problem, an API which applies them is no longer RESTful.
+HTTP GET:
+https://localhost/api/owner/12345
+Accept: application/vnd.api.owner+json; version=2
+```
+
+#### Enhanced Media Type Header
+```
+HTTP GET:
+https://localhost/api/owner/12345
+Accept: application/vnd.api.owner.v1+json
+
+HTTP GET:
+https://localhost/api/owner/12345
+Accept: application/vnd.api.owner.v2+json
+```
+
 
 ### Hypermedia
 
 The concept of hypermedia was born over 80 years ago, it's surprising that with the popularity of REST that still the vast majority of RESTful APIs do not adhere to the basic constraints/principals, such as hypermedia (HATEOAS).
 
-An API must be using hypermedia to transfer state and describe itself to a client in order to be considered RESTful, yet it seems this fundamental fact is lost in translation. Most people I ask about what makes an API RESTful still reply by talking about URL structure and HTTP verbs.
+An API must be using hypermedia to transfer state and describe itself to a client in order to be considered RESTful, yet it seems this fundamental fact is lost in translation. Most people I ask about what makes an API RESTful still respond by talking about URL structure and HTTP verbs, there is still much we have to learn about the topic it seems (myself included)!
 
 ### Architecture
 
@@ -147,6 +179,7 @@ Todo...
 - DotNetCore
 - Docker
 - ELK container (seb/elk)
+- Postman (optional)
 
 ## Usage
 
@@ -170,13 +203,15 @@ Todo...
 the Design of Network-based Software Architectures](https://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm)
 - [API Change Strategy](https://nordicapis.com/api-change-strategy/)
 - [HATEOAS Wiki](https://en.wikipedia.org/wiki/HATEOAS)
-- [RFC5988 (web linking) @ IETF ](https://tools.ietf.org/html/rfc5988)
+- [RFC5988 (web linking) @ IETF](https://tools.ietf.org/html/rfc5988)
 - [Link Relations](https://www.iana.org/assignments/link-relations/link-relations.xml)
 - [existing rel values](http://microformats.org/wiki/existing-rel-values)
+- [RFC6838 (mime types) @ IETF](https://tools.ietf.org/html/rfc6838)
+- [json:api spec](http://jsonapi.org/)
+- [vnd.api+json mime type spec](https://www.iana.org/assignments/media-types/application/vnd.api+json)
 - [Generating Hypermedia links in ASP.NET Web API](http://benfoster.io/blog/generating-hypermedia-links-in-aspnet-web-api)
 - [Building Hypermedia Web APIs with ASP.NET Web API](https://msdn.microsoft.com/en-us/magazine/jj883957.aspx)
 - [Hypermedia links with Servicestack new API](https://stackoverflow.com/questions/18351944/hypermedia-links-with-servicestack-new-api)
--[ASP.NET Core RESTful Web API versioning made easy](https://www.hanselman.com/blog/ASPNETCoreRESTfulWebAPIVersioningMadeEasy.aspx)
 - [HTTP status code for update and delete?](https://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete)
 - [http-decision-diagram](https://github.com/for-GET/http-decision-diagram)
 - [Postman Docs - Dynamic Variables](https://www.getpostman.com/docs/v6/postman/environments_and_globals/variables#dynamic-variables)
