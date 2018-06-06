@@ -7,15 +7,17 @@ namespace PetRego.AppHost
 {
     public class DiscoveryController : ApiController
     {
+        readonly IAppConfig AppConfig;
         readonly DiscoveryService DiscoveryService;
 
         public DiscoveryController(IAppConfig appConfig, DiscoveryService discoveryService) : base(appConfig)
         {
+            AppConfig = appConfig;
             DiscoveryService = discoveryService;
         }
 
         [HttpGet]
-        [Route("api")]
+        [Route(ApiBasePath)]
         public IResponse Get()
         {
             var response = DiscoveryService.Discover();

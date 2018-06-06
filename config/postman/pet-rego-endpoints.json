@@ -1,62 +1,12 @@
 {
 	"info": {
-		"_postman_id": "07060b1b-27c9-d34c-9560-e28ff448b9b1",
+		"_postman_id": "9e0b276f-547e-4888-a2fe-28d0357f2d78",
 		"name": "pet-rego-challenge",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "api/pet/get",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {},
-				"url": {
-					"raw": "{{base-uri}}:{{port}}/{{api-path}}/pet",
-					"host": [
-						"{{base-uri}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"{{api-path}}",
-						"pet"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "api/pet/get/id",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					},
-					{
-						"key": "",
-						"value": ""
-					}
-				],
-				"body": {},
-				"url": {
-					"raw": "{{base-uri}}:{{port}}/{{api-path}}/pet/1234567890",
-					"host": [
-						"{{base-uri}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"{{api-path}}",
-						"pet",
-						"1234567890"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "api/owner/get/id",
+			"name": "/owner/id",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -77,46 +27,50 @@
 			"response": []
 		},
 		{
-			"name": "api/owner/get",
+			"name": "/owner/search",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner",
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/search/emailAddress/testx",
 					"host": [
 						"{{base-uri}}"
 					],
 					"port": "{{port}}",
 					"path": [
 						"{{api-path}}",
-						"owner"
+						"owner",
+						"search",
+						"emailAddress",
+						"testx"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "api/get",
+			"name": "/",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "{{base-uri}}:{{port}}/{{api-path}}",
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/",
 					"host": [
 						"{{base-uri}}"
 					],
 					"port": "{{port}}",
 					"path": [
-						"{{api-path}}"
+						"{{api-path}}",
+						""
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "api/owner/post",
+			"name": "/owner/",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -127,7 +81,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"EmailAddress\": \"test-2@test.com\",\n    \"FirstName\": \"Test Two\",\n    \"LastName\": \"Tester\",\n    \"DateOfBirth\": \"2000-05-20T00:00:00Z\",\n    \"Address\": {\n    \t\"Country\": \"Australia\",\n    \t\"State\": \"NSW\",\n    \t\"City\": \"Sydney\",\n    \t\"StreetName\": \"Sydney St\",\n    \t\"StreetNumber\": \"1\",\n    \t\"PostCode\": \"2000\"\n    } \n}"
+					"raw": "{\n    \"Id\" : \"{{$guid}}\",\n    \"EmailAddress\": \"peter@test.com\",\n    \"FirstName\": \"Test\",\n    \"LastName\": \"Tester\",\n    \"PhoneNumber\": \"+612 9000 0000 \",\n    \"DateOfBirth\": \"2000-05-20T00:00:00Z\",\n    \"LastPurchaseDate\": \"2018-05-20T00:00:00Z\",\n    \"TotalPurchases\": \"7\",\n    \"Address\": {\n      \"Country\": \"Australia\",\n      \"State\": \"NSW\",\n      \"City\": \"Sydney\",\n      \"StreetName\": \"Sydney St\",\n      \"StreetNumber\": \"1\",\n      \"PostCode\": \"2000\"\n    } \n}"
 				},
 				"url": {
 					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner",
@@ -144,7 +98,7 @@
 			"response": []
 		},
 		{
-			"name": "api/owner/put/id",
+			"name": "/owner/id",
 			"request": {
 				"method": "PUT",
 				"header": [
@@ -155,7 +109,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"Id\": \"eef932c1-499d-4502-af73-def33dc38c90\",\n    \"EmailAddress\": \"test-new@test.com\",\n    \"FirstName\": \"Test New New 2\",\n    \"LastName\": \"Tester\",\n    \"DateOfBirth\": \"2000-05-20T00:00:00Z\",\n    \"Address\": {\n    \t\"Country\": \"Australia\",\n    \t\"State\": \"NSW\",\n    \t\"City\": \"Sydney\",\n    \t\"StreetName\": \"Sydney St\",\n    \t\"StreetNumber\": \"1\",\n    \t\"PostCode\": \"2000\"\n    } \n}"
+					"raw": "{\n  \"Id\": \"eef932c1-499d-4502-af73-def33dc38c90\",\n    \"EmailAddress\": \"test@test.com\",\n    \"FirstName\": \"Test New\",\n    \"LastName\": \"Tester\",\n    \"PhoneNumber\": \"+612 9000 0000 \",\n    \"DateOfBirth\": \"2000-05-20T00:00:00Z\",\n    \"LastPurchaseDate\": \"2018-06-20T00:00:00Z\",\n    \"TotalPurchases\": \"8\",\n    \"Address\": {\n      \"Country\": \"Australia\",\n      \"State\": \"NSW\",\n      \"City\": \"Sydney\",\n      \"StreetName\": \"Sydney St\",\n      \"StreetNumber\": \"1\",\n      \"PostCode\": \"2000\"\n    } \n}"
 				},
 				"url": {
 					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/eef932c1-499d-4502-af73-def33dc38c90",
@@ -173,7 +127,7 @@
 			"response": []
 		},
 		{
-			"name": "api/owner/delete/id",
+			"name": "/owner/id",
 			"request": {
 				"method": "DELETE",
 				"header": [
