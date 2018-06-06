@@ -10,7 +10,6 @@ namespace PetRego.Models
     public class Metadata
     {
         public List<Link> Links { get; }
-        public string BaseUrl { get; set; }
         public string ServerVersion { get; }
 
         public Metadata(List<Link> links, string baseUrl)
@@ -20,7 +19,6 @@ namespace PetRego.Models
                 throw new ArgumentException("One or more values must be provided!", nameof(links));
             }
             Links = links;
-            BaseUrl = baseUrl;
             ServerVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
     }

@@ -107,9 +107,42 @@ namespace PetRego.Data
             return listResponse.Documents.ToList();
         }
 
+        // todo - add pagination
+        public async Task<List<T>> Search(string fieldName, object value)
+        {
+            var indexResponse = await _client.IndexExistsAsync(_defaultIndex);
+            if (!indexResponse.IsValid)
+            {
+                throw new DataException<T>(
+                    "List(index check)",
+                    MapNestResult(Result.Error),
+                    $"{indexResponse.OriginalException.Message}{Environment.NewLine}{indexResponse.ServerError}{Environment.NewLine}{indexResponse.DebugInformation}",
+                    indexResponse.OriginalException
+                );
+            }
+            if (!indexResponse.Exists)
+            {
+                // Index doesn't exist - return an empty response.
+                return new List<T>();
+            }
+            var searchResponse = _client.Search<T>(s => s
+                .Index(_client.ConnectionSettings.DefaultIndex)
+                .Type(_client.ConnectionSettings.DefaultTypeName)
+                .Query(q => q.Term($"{fieldName}.keyword", value))); // todo - find a better way to query, string concat is bad
+            if (!searchResponse.IsValid)
+            {
+                throw new DataException<T>(
+                    "Search",
+                    MapNestResult(Result.Error),
+                    $"{searchResponse.OriginalException.Message}{Environment.NewLine}{searchResponse.ServerError}{Environment.NewLine}{searchResponse.DebugInformation}",
+                    searchResponse.OriginalException
+                );
+            }
+            return searchResponse.Documents.ToList();
+        }
         public async Task<bool> Add(T entity)
         {
-            var response = await _client.IndexDocumentAsync(new OwnerEntity());
+            var response = await _client.IndexDocumentAsync(entity);
             if (response.Result != Result.Created || !response.IsValid)
             {
                 throw new DataException<T>(

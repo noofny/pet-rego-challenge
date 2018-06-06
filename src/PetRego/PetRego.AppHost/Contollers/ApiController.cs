@@ -9,9 +9,7 @@ using System.Net.Http;
 namespace PetRego.AppHost
 {
     /// <summary>
-    /// I need to find a sustainable way of mocking the HttpContext object.
-    /// 
-    /// I'll post my findings in here (or the README) but this is currently a todo item. 
+    /// todo - find a nice wayto mock the HttpContext (ControllerContext) so these controllers can be unit tested.
     /// </summary>
     public class ApiController : Controller
     {
@@ -47,7 +45,6 @@ namespace PetRego.AppHost
         protected void ReplaceUrlTokens(IResponse response)
         {
             var baseUrl = GetBaseUrl();
-            response.Metadata.BaseUrl = response.Metadata.BaseUrl.Replace(AppConfig.TokenizedBaseUrl, baseUrl);
 
             foreach(var link in response.Metadata.Links)
             {
@@ -55,10 +52,14 @@ namespace PetRego.AppHost
             }
         }
 
-
         string GetBaseUrl()
         {
-            return $"{ControllerContext.HttpContext.Request.Scheme}://{ControllerContext.HttpContext.Request.Host}{Request.Path}";
+            var request = ControllerContext.HttpContext.Request;
+
+            var scheme = request.Scheme;
+            var host = request.Host.HasValue ? request.Host.Value : string.Empty;
+            var path = Request.Path.HasValue ? Request.Path.Value.TrimEnd('/') : string.Empty;
+            return $"{scheme}://{host}{path}";
         }
 
 

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PetRego.Common;
 using PetRego.Models;
-using System.Net;
 using PetRego.Api;
 
 namespace PetRego.AppHost
@@ -17,11 +16,11 @@ namespace PetRego.AppHost
         }
 
 
-        [HttpGet]
-        [Route("api/[controller]")]
-        public async Task<IResponse> GetAll()
+        [HttpGet("{emailAddress}")]
+        [Route("api/[controller]/search/{emailAddress}")]
+        public async Task<IResponse> Search(string emailAddress)
         {
-            var response = await OwnerService.GetAll();
+            var response = await OwnerService.Search(emailAddress);
             ReplaceUrlTokens(response);
             SetResponseCode(response.Result);
             return response;
@@ -29,9 +28,29 @@ namespace PetRego.AppHost
 
         [HttpGet("{id}")]
         [Route("api/[controller]")]
-        public async Task<IResponse> Get(string id)
+        public async Task<IResponse> Summary(string id)
         {
-            var response = await OwnerService.GetById(id);
+            var response = await OwnerService.Summary(id);
+            ReplaceUrlTokens(response);
+            SetResponseCode(response.Result);
+            return response;
+        }
+
+        [HttpGet("{id}")]
+        [Route("api/[controller]")]
+        public async Task<IResponse> Detail(string id)
+        {
+            var response = await OwnerService.Detail(id);
+            ReplaceUrlTokens(response);
+            SetResponseCode(response.Result);
+            return response;
+        }
+
+        [HttpPost]
+        [Route("api/[controller]")]
+        public async Task<IResponse> Create([FromBody]OwnerDetailModel owner)
+        {
+            var response = await OwnerService.Create(owner);
             ReplaceUrlTokens(response);
             SetResponseCode(response.Result);
             return response;
@@ -39,21 +58,10 @@ namespace PetRego.AppHost
 
         [HttpPut("{id}")]
         [Route("api/[controller]")]
-        public async Task<IResponse> Edit(string id, [FromBody]OwnerModel owner)
+        public async Task<IResponse> Edit(string id, [FromBody]OwnerDetailModel owner)
         {
             owner.Id = id;
             var response = await OwnerService.Update(owner);
-            ReplaceUrlTokens(response);
-            SetResponseCode(response.Result);
-            return response;
-        }
-
-
-        [HttpPost]
-        [Route("api/[controller]")]
-        public async Task<IResponse> Create([FromBody]OwnerModel owner)
-        {
-            var response = await OwnerService.Create(owner);
             ReplaceUrlTokens(response);
             SetResponseCode(response.Result);
             return response;

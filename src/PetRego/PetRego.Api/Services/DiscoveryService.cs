@@ -19,8 +19,8 @@ namespace PetRego.Api
             var metadata = new Metadata(new List<Link>
             {
                 Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Get.Method),
-                Link.Related($"{AppConfig.TokenizedBaseUrl}/owner", HttpMethod.Get.Method),
-                Link.Related($"{AppConfig.TokenizedBaseUrl}/pet", HttpMethod.Get.Method),
+                Link.Custom("owners", $"{AppConfig.TokenizedBaseUrl}/owner/search/{{emailAddress}}", HttpMethod.Get.Method),
+                Link.Custom("pets", $"{AppConfig.TokenizedBaseUrl}/pet/search/{{name}}", HttpMethod.Get.Method),
             }, AppConfig.TokenizedBaseUrl);
 
             var response = new Response(Result.Success, metadata);

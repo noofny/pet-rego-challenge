@@ -43,6 +43,11 @@
             return new Link("related", href, action);
         }
 
+        public static Link Custom(string rel, string href, string action)
+        {
+            return new Link(rel, href, action);
+        }
+
     }
 
 
