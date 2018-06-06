@@ -108,7 +108,7 @@ namespace PetRego.Data
         }
 
         // todo - add pagination
-        public async Task<List<T>> Search(string fieldName, object value)
+        public async Task<List<T>> Search(string field, string value)
         {
             var indexResponse = await _client.IndexExistsAsync(_defaultIndex);
             if (!indexResponse.IsValid)
@@ -128,7 +128,7 @@ namespace PetRego.Data
             var searchResponse = _client.Search<T>(s => s
                 .Index(_client.ConnectionSettings.DefaultIndex)
                 .Type(_client.ConnectionSettings.DefaultTypeName)
-                .Query(q => q.Term($"{fieldName}.keyword", value))); // todo - find a better way to query, string concat is bad
+                .Query(q => q.QueryString(qs => qs.DefaultField(field).Query(value))));
             if (!searchResponse.IsValid)
             {
                 throw new DataException<T>(

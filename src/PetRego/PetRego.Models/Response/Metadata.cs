@@ -12,13 +12,13 @@ namespace PetRego.Models
         public List<Link> Links { get; }
         public string ServerVersion { get; }
 
-        public Metadata(List<Link> links, string baseUrl)
+        public Metadata(params Link[] links)
         {
-            if (links == null || links.Count < 1)
+            if (links == null || links.Length < 1)
             {
                 throw new ArgumentException("One or more values must be provided!", nameof(links));
             }
-            Links = links;
+            Links = links.ToList();
             ServerVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
     }

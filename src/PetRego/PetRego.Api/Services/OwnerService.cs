@@ -23,18 +23,39 @@ namespace PetRego.Api
             AppConfig = appConfig;
         }
 
-        public async Task<IResponse> Search(string emailAddress)
+        public async Task<IResponse> Search(string field, string value)
         {
-            var metadata = new Metadata(new List<Link>
+            // todo - these min param length contraints are present because of the 
+            //        way I hacked together the search method in the ElasticSearch repo.
+            //        I could improve that so that the contraints are not needed.
+            const int MinParamLength = 4;
+            if (string.IsNullOrEmpty(field))
+            {
+                return new SingleResponse(Result.BadRequest, new Metadata(Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Get.Method)), $"Parameter cannot be null : field");
+            }
+            if (field.Length < MinParamLength)
+            {
+                return new SingleResponse(Result.BadRequest, new Metadata(Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Get.Method)), $"Parameter 'field' length must be {MinParamLength} or greater");
+            }
+            if (string.IsNullOrEmpty(value))
+            {
+                return new SingleResponse(Result.BadRequest, new Metadata(Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Get.Method)), $"Parameter cannot be null : value");
+            }
+            if (value.Length < MinParamLength)
+            {
+                return new SingleResponse(Result.BadRequest, new Metadata(Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Get.Method)), $"Parameter 'value' length must be {MinParamLength} or greater");
+            }
+
+            var metadata = new Metadata(new[]
             {
                 Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Get.Method),
-                Link.Custom("summary", $"{AppConfig.TokenizedBaseUrl}/{{id}}", HttpMethod.Get.Method),
-                Link.Custom("detail", $"{AppConfig.TokenizedBaseUrl}/{{id}}", HttpMethod.Get.Method),
-            }, AppConfig.TokenizedBaseUrl);
+                Link.Custom("summary", $"{AppConfig.TokenizedBaseUrl}/{{id}}/summary", HttpMethod.Get.Method),
+                Link.Custom("detail", $"{AppConfig.TokenizedBaseUrl}/{{id}}/detail", HttpMethod.Get.Method),
+            });
 
             try
             {
-                var ownerEntities = await OwnerRepository.Search("emailAddress", emailAddress);
+                var ownerEntities = await OwnerRepository.Search(field, value);
                 var ownerSummaryModels = Mapper.Map<List<OwnerSummaryModel>>(ownerEntities);
                 return new MultiResponse(Result.Success, metadata, ownerSummaryModels.OfType<IModel>().ToList());
             }
@@ -50,22 +71,21 @@ namespace PetRego.Api
 
         public async Task<IResponse> Summary(string id)
         {
-            var metadata = new Metadata(new List<Link>
-            {
-                Link.Self($"{AppConfig.TokenizedBaseUrl}/{id}", HttpMethod.Get.Method),
-                Link.Edit($"{AppConfig.TokenizedBaseUrl}/{id}", HttpMethod.Put.Method),
-                Link.Delete($"{AppConfig.TokenizedBaseUrl}/{id}", HttpMethod.Delete.Method),
-                Link.Custom("detail", $"{AppConfig.TokenizedBaseUrl}/{id}", HttpMethod.Get.Method),
-                Link.Custom("summary", $"{AppConfig.TokenizedBaseUrl}/{id}", HttpMethod.Get.Method),
-                Link.Custom("pets", $"{AppConfig.TokenizedBaseUrl}/{id}/pets", HttpMethod.Get.Method),
-                // todo - provide an action template instructing how to create a new item
-                // todo - provide an action template instructing how to update an existing item
-            }, AppConfig.TokenizedBaseUrl);
-
             if (string.IsNullOrEmpty(id))
             {
-                return new SingleResponse(Result.BadRequest, metadata, $"Parameter cannot be null : id");
+                return new SingleResponse(Result.BadRequest, new Metadata(Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Get.Method)), $"Parameter cannot be null : id");
             }
+
+            var metadata = new Metadata(new[]
+            {
+                Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Get.Method),
+                Link.Edit($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Put.Method),
+                Link.Delete($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Delete.Method),
+                Link.Custom("detail", $"{AppConfig.TokenizedBaseUrl}/detail", HttpMethod.Get.Method),
+                Link.Custom("pets", $"{AppConfig.TokenizedBaseUrl}/pets", HttpMethod.Get.Method),
+                // todo - provide an action template instructing how to create a new item
+                // todo - provide an action template instructing how to update an existing item
+            });
 
             try
             {
@@ -87,21 +107,21 @@ namespace PetRego.Api
 
         public async Task<IResponse> Detail(string id)
         {
-            var metadata = new Metadata(new List<Link>
-            {
-                Link.Self($"{AppConfig.TokenizedBaseUrl}/{id}", HttpMethod.Get.Method),
-                Link.Edit($"{AppConfig.TokenizedBaseUrl}/{id}", HttpMethod.Put.Method),
-                Link.Delete($"{AppConfig.TokenizedBaseUrl}/{id}", HttpMethod.Delete.Method),
-                Link.Custom("summary", $"{AppConfig.TokenizedBaseUrl}/{id}", HttpMethod.Get.Method),
-                Link.Custom("pets", $"{AppConfig.TokenizedBaseUrl}/{id}/pets", HttpMethod.Get.Method),
-                // todo - provide an action template instructing how to create a new item
-                // todo - provide an action template instructing how to update an existing item
-            }, AppConfig.TokenizedBaseUrl);
-
             if (string.IsNullOrEmpty(id))
             {
-                return new SingleResponse(Result.BadRequest, metadata, $"Parameter cannot be null : id");
+                return new SingleResponse(Result.BadRequest, new Metadata(Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Get.Method)), $"Parameter cannot be null : id");
             }
+
+            var metadata = new Metadata(new[]
+            {
+                Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Get.Method),
+                Link.Edit($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Put.Method),
+                Link.Delete($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Delete.Method),
+                Link.Custom("summary", $"{AppConfig.TokenizedBaseUrl}/summary", HttpMethod.Get.Method),
+                Link.Custom("pets", $"{AppConfig.TokenizedBaseUrl}/pets", HttpMethod.Get.Method),
+                // todo - provide an action template instructing how to create a new item
+                // todo - provide an action template instructing how to update an existing item
+            });
 
             try
             {
@@ -123,23 +143,23 @@ namespace PetRego.Api
 
         public async Task<IResponse> Create(OwnerDetailModel owner)
         {
-            var metadata = new Metadata(new List<Link>
-            {
-                Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Post.Method),
-                Link.Custom("summary", $"{AppConfig.TokenizedBaseUrl}/{owner.Id}", HttpMethod.Get.Method),
-                Link.Custom("detail", $"{AppConfig.TokenizedBaseUrl}/{owner.Id}", HttpMethod.Get.Method),
-                Link.Edit($"{AppConfig.TokenizedBaseUrl}/{owner.Id}", HttpMethod.Put.Method),
-                Link.Delete($"{AppConfig.TokenizedBaseUrl}/{owner.Id}", HttpMethod.Delete.Method),
-            }, AppConfig.TokenizedBaseUrl);
-
             if (owner == null)
             {
-                return new SingleResponse(Result.BadRequest, metadata, $"Parameter cannot be null : owner");
+                return new SingleResponse(Result.BadRequest, new Metadata(Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Post.Method)), $"Parameter cannot be null : owner");
             }
             if (string.IsNullOrEmpty(owner.Id))
             {
-                return new SingleResponse(Result.BadRequest, metadata, $"Parameter cannot be null : owner.id");
+                return new SingleResponse(Result.BadRequest, new Metadata(Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Post.Method)), $"Parameter cannot be null : owner.id");
             }
+
+            var metadata = new Metadata(new[]
+            {
+                Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Post.Method),
+                Link.Custom("summary", $"{AppConfig.TokenizedBaseUrl}/{owner.Id}/summary", HttpMethod.Get.Method),
+                Link.Custom("detail", $"{AppConfig.TokenizedBaseUrl}/{owner.Id}/detail", HttpMethod.Get.Method),
+                Link.Edit($"{AppConfig.TokenizedBaseUrl}/{owner.Id}", HttpMethod.Put.Method),
+                Link.Delete($"{AppConfig.TokenizedBaseUrl}/{owner.Id}", HttpMethod.Delete.Method),
+            });
 
             try
             {
@@ -159,18 +179,18 @@ namespace PetRego.Api
 
         public async Task<IResponse> Update(OwnerDetailModel owner)
         {
-            var metadata = new Metadata(new List<Link>
-            {
-                Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Put.Method),
-                Link.Custom("summary", $"{AppConfig.TokenizedBaseUrl}/{owner.Id}", HttpMethod.Get.Method),
-                Link.Custom("detail", $"{AppConfig.TokenizedBaseUrl}/{owner.Id}", HttpMethod.Get.Method),
-                Link.Delete($"{AppConfig.TokenizedBaseUrl}/{owner.Id}", HttpMethod.Delete.Method),
-            }, AppConfig.TokenizedBaseUrl);
-
             if (owner == null)
             {
-                return new SingleResponse(Result.BadRequest, metadata, $"Parameter cannot be null : owner");
+                return new SingleResponse(Result.BadRequest, new Metadata(Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Put.Method)), $"Parameter cannot be null : owner");
             }
+
+            var metadata = new Metadata(new[]
+            {
+                Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Put.Method),
+                Link.Custom("summary", $"{AppConfig.TokenizedBaseUrl}/{owner.Id}/summary", HttpMethod.Get.Method),
+                Link.Custom("detail", $"{AppConfig.TokenizedBaseUrl}/{owner.Id}/detail", HttpMethod.Get.Method),
+                Link.Delete($"{AppConfig.TokenizedBaseUrl}/{owner.Id}", HttpMethod.Delete.Method),
+            });
 
             try
             {
@@ -190,16 +210,15 @@ namespace PetRego.Api
 
         public async Task<IResponse> Delete(string id)
         {
-            var metadata = new Metadata(new List<Link>
-            {
-                Link.Self($"{AppConfig.TokenizedBaseUrl}/{id}", HttpMethod.Delete.Method),
-                Link.Custom("search", $"{AppConfig.TokenizedBaseUrl}/search/{{emailAddress}}", HttpMethod.Get.Method),
-            }, AppConfig.TokenizedBaseUrl);
-
             if (string.IsNullOrEmpty(id))
             {
-                return new SingleResponse(Result.BadRequest, metadata, $"Parameter cannot be null : id");
+                return new SingleResponse(Result.BadRequest, new Metadata(Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Delete.Method)), $"Parameter cannot be null : id");
             }
+
+            var metadata = new Metadata(new[]
+            {
+                Link.Self($"{AppConfig.TokenizedBaseUrl}", HttpMethod.Delete.Method),
+            });
 
             try
             {

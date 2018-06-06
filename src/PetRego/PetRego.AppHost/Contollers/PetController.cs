@@ -6,13 +6,13 @@ using PetRego.Api;
 
 namespace PetRego.AppHost
 {
-    public class OwnerController : ApiController
+    public class PetController : ApiController
     {
-        readonly OwnerService OwnerService;
+        readonly PetService PetService;
 
-        public OwnerController(OwnerService ownerService, IAppConfig appConfig): base(appConfig)
+        public PetController(PetService petService, IAppConfig appConfig): base(appConfig)
         {
-            OwnerService = ownerService;
+            PetService = petService;
         }
 
 
@@ -20,17 +20,7 @@ namespace PetRego.AppHost
         [Route(ApiBasePath + ApiControllerPath + "search/{field}/{value}")]
         public async Task<IResponse> Search(string field, string value)
         {
-            var response = await OwnerService.Search(field, value);
-            ReplaceUrlTokens(response);
-            SetResponseCode(response.Result);
-            return response;
-        }
-
-        [HttpGet]
-        [Route(ApiBasePath + ApiControllerPath + "{id}/summary")]
-        public async Task<IResponse> Summary(string id)
-        {
-            var response = await OwnerService.Summary(id);
+            var response = await PetService.Search(field, value);
             ReplaceUrlTokens(response);
             SetResponseCode(response.Result);
             return response;
@@ -40,7 +30,7 @@ namespace PetRego.AppHost
         [Route(ApiBasePath + ApiControllerPath + "{id}/detail")]
         public async Task<IResponse> Detail(string id)
         {
-            var response = await OwnerService.Detail(id);
+            var response = await PetService.Detail(id);
             ReplaceUrlTokens(response);
             SetResponseCode(response.Result);
             return response;
@@ -48,9 +38,9 @@ namespace PetRego.AppHost
 
         [HttpPost]
         [Route(ApiBasePath + ApiControllerPath)]
-        public async Task<IResponse> Create([FromBody]OwnerDetailModel owner)
+        public async Task<IResponse> Create([FromBody]PetModel pet)
         {
-            var response = await OwnerService.Create(owner);
+            var response = await PetService.Create(pet);
             ReplaceUrlTokens(response);
             SetResponseCode(response.Result);
             return response;
@@ -58,10 +48,10 @@ namespace PetRego.AppHost
 
         [HttpPut]
         [Route(ApiBasePath + ApiControllerPath + "{id}")]
-        public async Task<IResponse> Edit(string id, [FromBody]OwnerDetailModel owner)
+        public async Task<IResponse> Edit(string id, [FromBody]PetModel pet)
         {
-            owner.Id = id;
-            var response = await OwnerService.Update(owner);
+            pet.Id = id;
+            var response = await PetService.Update(pet);
             ReplaceUrlTokens(response);
             SetResponseCode(response.Result);
             return response;
@@ -71,7 +61,7 @@ namespace PetRego.AppHost
         [Route(ApiBasePath + ApiControllerPath + "{id}")]
         public async Task<IResponse> Delete(string id)
         {
-            var response = await OwnerService.Delete(id);
+            var response = await PetService.Delete(id);
             ReplaceUrlTokens(response);
             SetResponseCode(response.Result);
             return response;
