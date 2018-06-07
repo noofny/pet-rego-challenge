@@ -17,6 +17,16 @@ namespace PetRego.AppHost
 
 
         [HttpGet]
+        [Route(ApiBasePath + "owner/{ownerId}/" + ApiControllerPath)]
+        public async Task<IResponse> Pets(string ownerId)
+        {
+            var response = await PetService.Search("ownerId", ownerId);
+            ReplaceUrlTokens(response);
+            SetResponseCode(response.Result);
+            return response;
+        }
+
+        [HttpGet]
         [Route(ApiBasePath + ApiControllerPath + "search/{field}/{value}")]
         public async Task<IResponse> Search(string field, string value)
         {
