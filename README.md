@@ -241,11 +241,15 @@ An addition to this is, I would have liked to demonstrate an implementation of c
 
 ### Logging
 
-todo
+Currently the API logs nothing. As I focused on items for the brief, with limited time I decided to omit this, at great pains. Given more time I would implement a simple NLog interface in the services at least, to provide basic transparency on what the apps is doing. Longer term I would extend this to log to a data store, possible another ELK instance.
 
 ### Dashboards
 
 Given more time, I would like to build a basic dashboard in Kibana showing breakdown of customer order volumes, pet type breakdown and other interesting metrics.
+
+### API / Hypermedia
+
+Given more time I would implement 'recipes' or 'templates' in the responses, which would instruct a client the exact schema required for example to create new records. At present I have not done this, so a client would not know what is required to use these endpoints. The un-discoverable nature of this technically makes those endpoints un-RESTful, if that's a word.
 
 ## Remaining Work to Meet The Brief
 
