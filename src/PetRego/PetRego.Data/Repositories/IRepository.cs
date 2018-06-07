@@ -6,7 +6,6 @@ namespace PetRego.Data
     public interface IRepository<T> where T : class, IEntity
     {
         Task<T> Get(string id);
-        Task<List<T>> List();
         Task<List<T>> Search(string field, string value);
         Task<bool> Add(T entity);
         Task<bool> Update(T entity);

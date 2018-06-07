@@ -15,6 +15,8 @@ namespace PetRego.Data
     public class PetEntity : IEntity
     {
         public string Id { get; set; }
+        public DateTime Created { get; set; }
+        public DateTime? Updated { get; set; }
         public string OwnerId { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
         public PetType Type { get; set; }
@@ -22,6 +24,12 @@ namespace PetRego.Data
         public string Description { get; set; }
         public string Name { get; set; }
         public DateTime? DateOfBirth { get; set; }
+
+        public PetEntity()
+        {
+            Id = Guid.NewGuid().ToString();
+            Created = DateTime.UtcNow;
+        }
 
     }
 }

@@ -75,38 +75,6 @@ namespace PetRego.Data
             return response.Documents.SingleOrDefault();
         }
 
-        public async Task<List<T>> List()
-        {
-            var indexResponse = await _client.IndexExistsAsync(_defaultIndex);
-            if (!indexResponse.IsValid)
-            {
-                throw new DataException<T>(
-                    "List(index check)",
-                    MapNestResult(Result.Error),
-                    $"{indexResponse.OriginalException.Message}{Environment.NewLine}{indexResponse.ServerError}{Environment.NewLine}{indexResponse.DebugInformation}",
-                    indexResponse.OriginalException
-                );
-            }
-            if (!indexResponse.Exists)
-            {
-                // Index doesn't exist - return an empty response.
-                return new List<T>();
-            }
-            var listResponse = _client.Search<T>(s => s
-                 .Index(_client.ConnectionSettings.DefaultIndex)
-                 .Type(_client.ConnectionSettings.DefaultTypeName));
-            if (!listResponse.IsValid)
-            {
-                throw new DataException<T>(
-                    "List",
-                    MapNestResult(Result.Error),
-                    $"{listResponse.OriginalException.Message}{Environment.NewLine}{listResponse.ServerError}{Environment.NewLine}{listResponse.DebugInformation}",
-                    listResponse.OriginalException
-                );
-            }
-            return listResponse.Documents.ToList();
-        }
-
         // todo - add pagination
         public async Task<List<T>> Search(string field, string value)
         {
@@ -142,6 +110,7 @@ namespace PetRego.Data
         }
         public async Task<bool> Add(T entity)
         {
+            entity.Created = DateTime.UtcNow;
             var response = await _client.IndexDocumentAsync(entity);
             if (response.Result != Result.Created || !response.IsValid)
             {
@@ -157,6 +126,7 @@ namespace PetRego.Data
 
         public async Task<bool> Update(T entity)
         {
+            entity.Updated = DateTime.UtcNow;
             var response = await _client.UpdateAsync<T, object>(entity.Id, u => u
                 .Doc(entity)
                 .Upsert(entity)

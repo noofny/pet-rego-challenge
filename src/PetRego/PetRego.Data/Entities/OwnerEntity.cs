@@ -6,6 +6,8 @@ namespace PetRego.Data
     public class OwnerEntity : IEntity
     {
         public string Id { get; set; }
+        public DateTime Created { get; set; }
+        public DateTime? Updated { get; set; }
         public string EmailAddress { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -18,6 +20,7 @@ namespace PetRego.Data
         public OwnerEntity()
         {
             Id = Guid.NewGuid().ToString();
+            Created = DateTime.UtcNow;
         }
 
     }

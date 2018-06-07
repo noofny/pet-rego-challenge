@@ -7,6 +7,8 @@ namespace PetRego.Models
     public class PetModel : IModel
     {
         public string Id { get; set; }
+        public DateTime Created { get; set; }
+        public DateTime? Updated { get; set; }
         public string OwnerId { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
         public PetType Type { get; set; }
