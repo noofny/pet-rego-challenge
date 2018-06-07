@@ -20,10 +20,8 @@ namespace PetRego.Api
             Mapper.Initialize(cfg => {
 
                 // entity to model
-                cfg.CreateMap<OwnerEntity, OwnerSummaryModel>()
-                    .ForMember(dest => dest.NumberOfPets, opt => opt.Ignore());
-                cfg.CreateMap<OwnerEntity, OwnerDetailModel>()
-                    .ForMember(dest => dest.NumberOfPets, opt => opt.Ignore());
+                cfg.CreateMap<OwnerEntity, OwnerSummaryModel>();
+                cfg.CreateMap<OwnerEntity, OwnerDetailModel>();
                 cfg.CreateMap<PetEntity, PetModel>();
 
                 // model to entity

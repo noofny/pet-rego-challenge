@@ -39,7 +39,6 @@ namespace PetRego.UnitTests.MappingTests
                 FirstName = "Mary",
                 LastName = "Swivellnail",
                 EmailAddress = "mary.swivellnail@gmail.com",
-                LastPurchaseDate = DateTime.Now.Subtract(TimeSpan.FromDays(rnd.Next(1, 365))),
             };
             var target = Mapper.Map<OwnerSummaryModel, OwnerEntity>(source);
 
@@ -48,7 +47,6 @@ namespace PetRego.UnitTests.MappingTests
             Assert.AreEqual(source.FirstName, target.FirstName);
             Assert.AreEqual(source.LastName, target.LastName);
             Assert.AreEqual(source.EmailAddress, target.EmailAddress);
-            Assert.AreEqual(source.LastPurchaseDate, target.LastPurchaseDate);
 
         }
 
@@ -63,7 +61,6 @@ namespace PetRego.UnitTests.MappingTests
                 LastName = "Swivellnail",
                 EmailAddress = "mary.swivellnail@gmail.com",
                 DateOfBirth = DateTime.Now.Subtract(TimeSpan.FromDays(rnd.Next(1, 9999))),
-                LastPurchaseDate = DateTime.Now.Subtract(TimeSpan.FromDays(rnd.Next(1, 365))),
                 Address = new Address
                 {
                     City = "Sydney",
@@ -82,7 +79,6 @@ namespace PetRego.UnitTests.MappingTests
             Assert.AreEqual(source.LastName, target.LastName);
             Assert.AreEqual(source.EmailAddress, target.EmailAddress);
             Assert.AreEqual(source.DateOfBirth, target.DateOfBirth);
-            Assert.AreEqual(source.LastPurchaseDate, target.LastPurchaseDate);
             Assert.IsNotNull(target.Address);
             Assert.AreEqual(source.Address.City, target.Address.City);
             Assert.AreEqual(source.Address.Country, target.Address.Country);

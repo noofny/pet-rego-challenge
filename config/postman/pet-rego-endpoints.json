@@ -6,13 +6,13 @@
 	},
 	"item": [
 		{
-			"name": "/owner/id",
+			"name": "/owner/{id}/summary",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/eef932c1-499d-4502-af73-def33dc38c90",
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/f1c41c19-62eb-4b3c-afe4-d9a9e74b8130/summary",
 					"host": [
 						"{{base-uri}}"
 					],
@@ -20,20 +20,65 @@
 					"path": [
 						"{{api-path}}",
 						"owner",
-						"eef932c1-499d-4502-af73-def33dc38c90"
+						"f1c41c19-62eb-4b3c-afe4-d9a9e74b8130",
+						"summary"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "/owner/search",
+			"name": "/owner/{id}/detail",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/search/emailAddress/testx",
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/f1c41c19-62eb-4b3c-afe4-d9a9e74b8130/detail",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}",
+						"owner",
+						"f1c41c19-62eb-4b3c-afe4-d9a9e74b8130",
+						"detail"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/owner/{id}/pets/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/f1c41c19-62eb-4b3c-afe4-d9a9e74b8130-XXX/pets",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}",
+						"owner",
+						"f1c41c19-62eb-4b3c-afe4-d9a9e74b8130-XXX",
+						"pets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/owner/search/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/search/test@test.com",
 					"host": [
 						"{{base-uri}}"
 					],
@@ -42,8 +87,7 @@
 						"{{api-path}}",
 						"owner",
 						"search",
-						"emailAddress",
-						"testx"
+						"test@test.com"
 					]
 				}
 			},
@@ -81,7 +125,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"Id\" : \"{{$guid}}\",\n    \"EmailAddress\": \"peter@test.com\",\n    \"FirstName\": \"Test\",\n    \"LastName\": \"Tester\",\n    \"PhoneNumber\": \"+612 9000 0000 \",\n    \"DateOfBirth\": \"2000-05-20T00:00:00Z\",\n    \"LastPurchaseDate\": \"2018-05-20T00:00:00Z\",\n    \"TotalPurchases\": \"7\",\n    \"Address\": {\n      \"Country\": \"Australia\",\n      \"State\": \"NSW\",\n      \"City\": \"Sydney\",\n      \"StreetName\": \"Sydney St\",\n      \"StreetNumber\": \"1\",\n      \"PostCode\": \"2000\"\n    } \n}"
+					"raw": "{\n    \"Id\" : \"{{$guid}}\",\n    \"EmailAddress\": \"mary@test.com\",\n    \"FirstName\": \"Test\",\n    \"LastName\": \"Tester\",\n    \"PhoneNumber\": \"+612 9000 0000 \",\n    \"DateOfBirth\": \"2000-05-20T00:00:00Z\",\n    \"TotalPurchases\": \"7\",\n    \"Address\": {\n      \"Country\": \"Australia\",\n      \"State\": \"NSW\",\n      \"City\": \"Sydney\",\n      \"StreetName\": \"Sydney St\",\n      \"StreetNumber\": \"1\",\n      \"PostCode\": \"2000\"\n    } \n}"
 				},
 				"url": {
 					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner",
@@ -98,7 +142,35 @@
 			"response": []
 		},
 		{
-			"name": "/owner/id",
+			"name": "/pet/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Id\" : \"{{$guid}}\",\n    \"OwnerId\": \"f1c41c19-62eb-4b3c-afe4-d9a9e74b8130\",\n    \"Type\": \"Dog\",\n    \"Breed\": \"Staffy\",\n    \"Description\": \"A test dog, good at testing.\",\n    \"Name\": \"McTesty\"\n}"
+				},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/pet",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}",
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/owner/{id}/",
 			"request": {
 				"method": "PUT",
 				"header": [
@@ -127,7 +199,7 @@
 			"response": []
 		},
 		{
-			"name": "/owner/id",
+			"name": "/owner/{id}/",
 			"request": {
 				"method": "DELETE",
 				"header": [

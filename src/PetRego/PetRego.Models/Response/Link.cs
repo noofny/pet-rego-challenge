@@ -1,5 +1,14 @@
 ﻿namespace PetRego.Models
 {
+    /// <summary>
+    /// 
+    /// The industry at large still seems to come up with an agreed set of relation values
+    /// that cover the broad spectrum of actions/relations needed by any real-world REST API.
+    /// 
+    /// As a result, I have made static constructors for values covered by the original RFC (linked in README)
+    /// and for the others I have provided here by the static Custom method.
+    /// 
+    /// </summary>
     public class Link
     {
         public string Rel { get; private set; }

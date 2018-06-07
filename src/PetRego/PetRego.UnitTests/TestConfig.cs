@@ -7,11 +7,17 @@ namespace PetRego.UnitTests
     {
         public string ElasticSearchUri { get; set; }
         public string TokenizedBaseUrl { get; set; }
+        public string TokenizedCurrentUrl { get; set; }
+        public string TokenizedControllerPath { get; set; }
+        public string TokenizedActionPath { get; set; }
 
         public TestConfig()
         {
             ElasticSearchUri = "http://lcoalhost/doesnt-matter";
             TokenizedBaseUrl = "<<BASE_URL>>";
+            TokenizedCurrentUrl = "<<CURRENT_URL>>";
+            TokenizedControllerPath = "<<CONTROLLER_PATH>>";
+            TokenizedActionPath = "<<ACTION_PATH>>";
 
         }
     }
