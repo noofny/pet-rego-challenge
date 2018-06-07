@@ -1,9 +1,10 @@
 ﻿using System;
 using Autofac;
+using PetRego.Api;
 using PetRego.Data;
 using PetRego.Common;
 
-namespace PetRego.Api
+namespace PetRego.UnitTests
 {
     public static class TestContainer
     {

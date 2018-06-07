@@ -1,6 +1,7 @@
 ﻿using System;
+using PetRego.Common;
 
-namespace PetRego.Common
+namespace PetRego.UnitTests
 {
     public class TestConfig : IAppConfig
     {

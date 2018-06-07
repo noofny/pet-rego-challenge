@@ -27,7 +27,7 @@ namespace PetRego.UnitTests.DataTests
 
         [TestMethod]
         [Ignore("Requires refactoring to work around complexities of Moq and async repo methods.")]
-        public void Can_GetAllOwners()
+        public void Can_Search_Owners()
         {
             /* todo - refactoring is needed here to make the repo unit testable.
             *    
@@ -37,7 +37,7 @@ namespace PetRego.UnitTests.DataTests
             * mocked client to respond with a null response object. 
             * Have already spent a bit on this and very little help on the async support methods of Moq.
             * 
-            * TL;DR - the lack of docs/examples for MOQ's async support is making this a bit difficult. 
+            * TL;DR - the lack of docs/examples for MOQ's async support is making this a bit of a trial. 
             */
             var clientMock = new Mock<Nest.IElasticClient>();
             var mockRequest = It.IsAny<Nest.Indices>();
@@ -46,8 +46,8 @@ namespace PetRego.UnitTests.DataTests
             clientMock.Setup(ec => ec.IndexExistsAsync(
                 mockRequest, mockRequestFunc, new System.Threading.CancellationToken()))
                       .Returns(mockResponse);
-            var systemUnderTestX = new Mock<ElasticSearchRepository<OwnerEntity>>(clientMock.Object).Object;
-            var actualX = systemUnderTestX.List().Result;
+            var systemUnderTest = new Mock<ElasticSearchRepository<OwnerEntity>>(clientMock.Object).Object;
+            var actual = systemUnderTest.Search("id", Guid.NewGuid().ToString()).Result;
         }
 
 
