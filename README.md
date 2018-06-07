@@ -70,6 +70,7 @@ I decided to build an API using WebApi on DotNetCore and leverage a few technolo
 ### Decisions & Challenges
 
 - I chose to build a WebAPI project using DotNetCore. This was purely to learn the framework as I believe it is a strongly emerging technology for good reasons.
+- I developed this on MacOS with VisualStudio 2017 Community Edition. No ReSharper or linting addons, just coding bare-back...I really miss ReSharper!
 - I chose to use a containerized ELK stack (ElasticSearch, Lucene, Kibana) for the data persistence layer. Possibly a contentious decision, I chose this as a learning exercise and to provide some fun with data visualizations which are available "out of the box" with Kibana.
 - Mocking IElasticClient in my repositories proved to be a challenge, due to a lack of experience/docs/examples (or limitations) around async handling within the mocking framework I used (Moq). In order not to have this slow delivery I flagged as a todo item.
 
@@ -200,7 +201,9 @@ The solution does not implement any authentication as per the brief. The simples
 
 ### Testing
 
-Unit testing (mocking) of the actual API controllers has not been done due to time constraints. Whilst the controllers are lightweight and contain very little actual logic, they are where I enrich the responses with hypermedia, so this being a core feature of a REST API means it must have test coverage. With more time, I would like to add more varied test setups, particularly around testing the services. I honestly feel that the general test coverage in this project as it stands is very low and well below 'production-ready' standards.
+Unit testing (mocking) of the actual API controllers has not been done due to time constraints. Whilst the controllers are lightweight and contain very little actual logic, they are where I enrich the responses with hypermedia, so this being a core feature of a REST API means it must have test coverage. With more time, I would like to add more varied test setups and test more negative scenarios, particularly around testing the services.
+
+**I honestly admit that the general test coverage in this project as it stands is very low and well below an acceptable 'production-ready' standard.**
 
 With more time, I would like to add integration testing code which would add testing data. This code might be Javascript so that it can easily be bundled with the Postman config or run with Node / Mocha etc.
 
