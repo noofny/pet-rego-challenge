@@ -156,7 +156,6 @@ https://localhost/api/owner/12345
 Accept: application/vnd.api.owner.v2+json
 ```
 
-
 ### Hypermedia
 
 The concept of hypermedia was born over 80 years ago, it's surprising that with the popularity of REST that still the vast majority of RESTful APIs do not adhere to the basic constraints/principals, such as hypermedia (HATEOAS).
@@ -175,19 +174,50 @@ Todo.
 
 <img height="100px" src="./pics/logo-setup.png">
 
-Todo...
-- Visual Studio 2017
-- DotNetCore
-- Docker
-- ELK container (seb/elk)
-- Postman (optional)
+There is a nice [guide from Microsoft](https://www.microsoft.com/net/learn/get-started/macos) on how to get setup running DotNetCore in 10mins, which would cover most requirements.
+
+### Individual Requirements
+
+- Visual Studio 2017 [setup guide](https://docs.microsoft.com/en-us/visualstudio/install/install-visual-studio)
+- DotNetCore [setup guide](https://www.microsoft.com/net/download/macos)
+- Docker [setup guide for MacOS](https://docs.docker.com/docker-for-mac/install/) or [setup guide for Windows](https://docs.docker.com/docker-for-windows/install/)
+- ELK container [container page](https://hub.docker.com/r/sebp/elk/)
+
+```text
+docker pull sebp/elk
+```
+
+- Postman [setup guide](https://www.getpostman.com/) (optional but recommended).
 
 ## Usage
 
-Todo...
-- Build the code
-- Run the code
-- The site runs on localhost on port 5000
+- If you have Visual Studio setup then you can simply open the solution and run/debug it from there. It will automatically run in a shell and allow you to debug if you prefer.
+
+- Alternatively, you can compile/run it from command line (powershell/bash) as follows;
+
+```bash
+cd /src/PetRego/
+msbuild PetRego.sln
+```
+
+- Run the application from a command line as follows;
+
+```bash
+cd /src/PetRego/PetRego.AppHost/bin/Debug/netcoreapp2.0
+dotnet PetRego.AppHost.dll
+```
+
+You should see the following output;
+
+```bash
+Hosting environment: Production
+Content root path: /src/PetRego/PetRego.AppHost/bin/Debug/netcoreapp2.0
+Now listening on: http://localhost:5000
+Application started. Press Ctrl+C to shut down.
+```
+
+The site runs on localhost on port 5000
+I recommend using Postman to access the API. There are both environment and endpoint confis you can import included in this repo under the /config folder.
 
 ## Future Improvements
 
@@ -209,6 +239,19 @@ With more time, I would like to add integration testing code which would add tes
 
 An addition to this is, I would have liked to demonstrate an implementation of contract-based testing [using PACT](https://docs.pact.io/), primarily as a learning exercise but also as a reference point for possible future talks/projects or mentoring colleagues.
 
+### Logging
+
+todo
+
+### Dashboards
+
+Given more time, I would like to build a basic dashboard in Kibana showing breakdown of customer order volumes, pet type breakdown and other interesting metrics.
+
+## Remaining Work to Meet The Brief
+
+- Add endpoint to retrieve the pets for a given owner.
+- Add endpoint to retrieve pets counts aggregated by pet type (for food ordering).
+
 ## References & Inspiration
 
 - [GOTO 2014 • REST: I don't Think it Means What You Think it Does • Stefan Tilkov](https://www.youtube.com/watch?v=pspy1H6A3FM)
@@ -229,5 +272,6 @@ the Design of Network-based Software Architectures](https://www.ics.uci.edu/~fie
 - [Hypermedia links with Servicestack new API](https://stackoverflow.com/questions/18351944/hypermedia-links-with-servicestack-new-api)
 - [HTTP status code for update and delete?](https://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete)
 - [http-decision-diagram](https://github.com/for-GET/http-decision-diagram)
+- [The Twelve-Factor App](https://12factor.net/)
 - [Postman Docs - Dynamic Variables](https://www.getpostman.com/docs/v6/postman/environments_and_globals/variables#dynamic-variables)
 - [Asynchronous Programming in .NET – Common Mistakes and Best Practices](https://www.codeproject.com/Articles/1246010/Asynchronous-Programming-in-NET-Common-Mistakes-an)
