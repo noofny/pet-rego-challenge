@@ -2,7 +2,7 @@
 using PetRego.Common;
 using PetRego.Models;
 using System.Net;
-using System.Linq;
+using AutoMapper;
 
 namespace PetRego.AppHost
 {
@@ -21,29 +21,8 @@ namespace PetRego.AppHost
 
         protected void SetResponseCode(Result result)
         {
-            var response = ControllerContext.HttpContext.Response;
-            switch (result)
-            {
-                case Result.BadRequest:
-                    response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    break;
-
-                case Result.InternalError:
-                    response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    break;
-
-                case Result.Created:
-                    response.StatusCode = (int)HttpStatusCode.Created;
-                    break;
-
-                default:
-                    // For POST/PUT/DELETE methods, it is common to respond with 204(NoContent).
-                    // Because I am returning a response with at least metadata/hypermedia however, 
-                    // I am choosing to return 200(OK) instead.
-                    response.StatusCode = (int)HttpStatusCode.OK;
-                    break;
-
-            }
+            var statusCode = Mapper.Map<HttpStatusCode>(result);
+            ControllerContext.HttpContext.Response.StatusCode = (int)statusCode;
         }
 
         protected void ReplaceUrlTokens(IResponse response)
