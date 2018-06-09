@@ -6,94 +6,6 @@
 	},
 	"item": [
 		{
-			"name": "/owner/{id}/summary",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {},
-				"url": {
-					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/f1c41c19-62eb-4b3c-afe4-d9a9e74b8130/summary",
-					"host": [
-						"{{base-uri}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"{{api-path}}",
-						"owner",
-						"f1c41c19-62eb-4b3c-afe4-d9a9e74b8130",
-						"summary"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/owner/{id}/detail",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {},
-				"url": {
-					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/f1c41c19-62eb-4b3c-afe4-d9a9e74b8130/detail",
-					"host": [
-						"{{base-uri}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"{{api-path}}",
-						"owner",
-						"f1c41c19-62eb-4b3c-afe4-d9a9e74b8130",
-						"detail"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/owner/{id}/pets/",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {},
-				"url": {
-					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/f1c41c19-62eb-4b3c-afe4-d9a9e74b8130-XXX/pets",
-					"host": [
-						"{{base-uri}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"{{api-path}}",
-						"owner",
-						"f1c41c19-62eb-4b3c-afe4-d9a9e74b8130-XXX",
-						"pets"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/owner/search/",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {},
-				"url": {
-					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/search/test@test.com",
-					"host": [
-						"{{base-uri}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"{{api-path}}",
-						"owner",
-						"search",
-						"test@test.com"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "/",
 			"request": {
 				"method": "GET",
@@ -114,7 +26,74 @@
 			"response": []
 		},
 		{
-			"name": "/owner/",
+			"name": "/owner/search",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/search/emailAddress/*test*",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}",
+						"owner",
+						"search",
+						"emailAddress",
+						"*test*"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/owner/{id}/summary",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/c6bd7627-7773-4c87-ab9e-dadf4fb3b933/summary",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}",
+						"owner",
+						"c6bd7627-7773-4c87-ab9e-dadf4fb3b933",
+						"summary"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/owner/{id}/detail",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/c6bd7627-7773-4c87-ab9e-dadf4fb3b933/detail",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}",
+						"owner",
+						"c6bd7627-7773-4c87-ab9e-dadf4fb3b933",
+						"detail"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/owner",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -142,7 +121,110 @@
 			"response": []
 		},
 		{
-			"name": "/pet/",
+			"name": "/owner/{id}",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"id\": \"f1c41c19-62eb-4b3c-afe4-d9a9e74b8130\",\n        \"created\": \"2018-06-07T09:50:29.660828Z\",\n        \"updated\": null,\n        \"emailAddress\": \"peter@test.com\",\n        \"firstName\": \"Peter\",\n        \"lastName\": \"Stratenhauzen\",\n        \"phoneNumber\": \"+612 9000 0000 \",\n        \"totalPurchases\": 7,\n        \"dateOfBirth\": \"2000-05-20T00:00:00Z\",\n        \"address\": {\n            \"country\": \"Australia\",\n            \"state\": \"NSW\",\n            \"city\": \"Sydney\",\n            \"streetName\": \"Sydney St\",\n            \"streetNumber\": \"1\",\n            \"postCode\": \"2000\"\n        }\n}"
+				},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/f1c41c19-62eb-4b3c-afe4-d9a9e74b8130",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}",
+						"owner",
+						"f1c41c19-62eb-4b3c-afe4-d9a9e74b8130"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/owner/{id}",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/84a07a88-619b-4f34-bf0d-2b51a5b8d0f7",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}",
+						"owner",
+						"84a07a88-619b-4f34-bf0d-2b51a5b8d0f7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/pet/search",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/pet/search/name/rufus",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}",
+						"pet",
+						"search",
+						"name",
+						"rufus"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/pet/{id}/detail",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/pet/c6bd7627-7773-4c87-ab9e-dadf4fb3b933/detail",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}",
+						"pet",
+						"c6bd7627-7773-4c87-ab9e-dadf4fb3b933",
+						"detail"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/pet",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -153,7 +235,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"Id\" : \"{{$guid}}\",\n    \"OwnerId\": \"f1c41c19-62eb-4b3c-afe4-d9a9e74b8130\",\n    \"Type\": \"Dog\",\n    \"Breed\": \"Staffy\",\n    \"Description\": \"A test dog, good at testing.\",\n    \"Name\": \"McTesty\"\n}"
+					"raw": "{\n    \"Id\" : \"{{$guid}}\",\n    \"OwnerId\": \"c6bd7627-7773-4c87-ab9e-dadf4fb3b933\",\n    \"Type\": \"Dog\",\n    \"Breed\": \"Staffy\",\n    \"Description\": \"\",\n    \"Name\": \"Keg\"\n}"
 				},
 				"url": {
 					"raw": "{{base-uri}}:{{port}}/{{api-path}}/pet",
@@ -170,7 +252,7 @@
 			"response": []
 		},
 		{
-			"name": "/owner/{id}/",
+			"name": "/pet/{id}",
 			"request": {
 				"method": "PUT",
 				"header": [
@@ -181,25 +263,25 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"Id\": \"eef932c1-499d-4502-af73-def33dc38c90\",\n    \"EmailAddress\": \"test@test.com\",\n    \"FirstName\": \"Test New\",\n    \"LastName\": \"Tester\",\n    \"PhoneNumber\": \"+612 9000 0000 \",\n    \"DateOfBirth\": \"2000-05-20T00:00:00Z\",\n    \"LastPurchaseDate\": \"2018-06-20T00:00:00Z\",\n    \"TotalPurchases\": \"8\",\n    \"Address\": {\n      \"Country\": \"Australia\",\n      \"State\": \"NSW\",\n      \"City\": \"Sydney\",\n      \"StreetName\": \"Sydney St\",\n      \"StreetNumber\": \"1\",\n      \"PostCode\": \"2000\"\n    } \n}"
+					"raw": "{\n    \"OwnerId\": \"c6bd7627-7773-4c87-ab9e-dadf4fb3b933\",\n    \"Type\": \"Dog\",\n    \"Breed\": \"Saint Bernard\",\n    \"Description\": \"\",\n    \"Name\": \"Keg\"\n}"
 				},
 				"url": {
-					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/eef932c1-499d-4502-af73-def33dc38c90",
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/pet/c6bd7627-7773-4c87-ab9e-dadf4fb3b933",
 					"host": [
 						"{{base-uri}}"
 					],
 					"port": "{{port}}",
 					"path": [
 						"{{api-path}}",
-						"owner",
-						"eef932c1-499d-4502-af73-def33dc38c90"
+						"pet",
+						"c6bd7627-7773-4c87-ab9e-dadf4fb3b933"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "/owner/{id}/",
+			"name": "/pet/{id}",
 			"request": {
 				"method": "DELETE",
 				"header": [
@@ -213,15 +295,15 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{base-uri}}:{{port}}/{{api-path}}/owner/37b98a90-5416-4379-b031-b80ee31e8922",
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/pet/c6bd7627-7773-4c87-ab9e-dadf4fb3b933",
 					"host": [
 						"{{base-uri}}"
 					],
 					"port": "{{port}}",
 					"path": [
 						"{{api-path}}",
-						"owner",
-						"37b98a90-5416-4379-b031-b80ee31e8922"
+						"pet",
+						"c6bd7627-7773-4c87-ab9e-dadf4fb3b933"
 					]
 				}
 			},
