@@ -6,11 +6,11 @@ This project is a response to a technical challenge. It is by no means a product
 
 <img height="100px" src="./pics/logo-brief.png">
 
-## The Brief
+# The Brief
 
 Your client PetRego is looking to build a new service presenting a REST API that will allow it to maintain a list of owners, their pets, and attributes.
 
-They want to record such details as:
+## They want to record such details as:
 
 - The owner's name
 - The pet's name
@@ -27,7 +27,7 @@ We know that:
 - Chickens eat corn
 - Snakes eat mice
 
-Assessment Criteria:
+## Assessment Criteria:
 
 - Build a simple rest service for storage and retrieval of owner and pet details. Your API should be:
   - RESTful.
@@ -37,7 +37,7 @@ Assessment Criteria:
 - Include a README with documentation around API endpoints and response format.
 - Include in your README the commands for building and running your solution and the port it starts on.
 
-Things we will be looking for:
+## Things we will be looking for:
 
 - Data modelling and API design.
 - Style:
@@ -46,14 +46,14 @@ Things we will be looking for:
   - Consistency
 - Testing.
 
-Things that you should consider implementing in your solution:
+## Things that you should consider implementing in your solution:
 
 - Versioned API
 - Dependency Injection
 - Mocking
 - HATEOAS/Hypermedia Principles
 
-Some notes:
+## Some notes:
 
 - We realize that projects like this are never quite finished. We're not looking to take your assessment and put it into production.
 
@@ -63,28 +63,25 @@ Some notes:
 
 <img height="100px" src="./pics/logo-idea.jpg">
 
-## The Approach
-
-I decided to build an API using WebApi on DotNetCore and leverage a few technologies not previously familiar with in order to learn and challenge myself. The solution is not complete or production-ready by any means, but hopefully shows understanding not only the brief but of SOLID principles and REST architecture.
-
-### Decisions & Challenges
+# The Approach
 
 - I chose to build a WebAPI project using DotNetCore. This was purely to learn the framework as I believe it is a strongly emerging technology for good reasons.
 - I developed this on MacOS with VisualStudio 2017 Community Edition. No ReSharper or linting addons, just coding bare-back...I really miss ReSharper!
+- The solution is not complete or production-ready by any means, but I have commented and marked todo items to indicate this and added a section below on future improvements.
 
-### Data Layer
+## Data Layer
 I originally considered using a relational database, possibly Microsoft SQL Server. Together with a mature ORM such as Entity Framework this would work nicely with WebApi. I chose however to take a challenge and use a completely different approach, implementing Elastic Search using the NEST SDK. I did this for the following advantages;
-- :+1: To try something different.
-- :+1: To challenge myself and further my knowledge of the technology.
-- :+1: To simplify setup - simply using a pre-compiled Docker image of an entire ELK stack.
-- :+1: To leverage data visualization tools that come out of the box with Kibana.
+- :green_heart: To try something different.
+- :green_heart: To challenge myself and further my knowledge of the technology.
+- :green_heart: To simplify setup - simply using a pre-compiled Docker image of an entire ELK stack.
+- :green_heart: To leverage data visualization tools that come out of the box with Kibana.
 ...however with the following disadvantages...
-- :-1: Added time and complexity to deliver the solution.
-- :-1: Repository code is not as succinct and elegant compared to coding against Entity Framework contexts.
-- :-1: Does not smoothly integrate with WebApi.
-- :-1: Harder to test, some testing has been left as a todo item (not happy about this at all).
+- :broken_heart: Added time and complexity to deliver the solution.
+- :broken_heart: Repository code is not as succinct and elegant compared to coding against Entity Framework contexts.
+- :broken_heart: Does not smoothly integrate with WebApi.
+- :broken_heart: Harder to test, some testing has been left as a todo item (not happy about this at all).
 
-### API Versioning
+## API Versioning
 
 There is a ridiculous level of contention surrounding the subject of how versioning should be approached when building a "RESTful" API. Above all the philosophical and semantic rants, an API in the real world will always need to change to meet the demands of it's consumers - and sometimes this will be a breaking change. This should be managed by a change strategy, a set of rules and process for handling changes. One such set of rules might be;
 - All new stuff is optional
@@ -166,51 +163,58 @@ https://localhost/api/owner/12345
 Accept: application/vnd.api.owner.v2+json
 ```
 
-### Hypermedia
+## Hypermedia
 
 The concept of hypermedia was born over 80 years ago, it's surprising that with the popularity of REST that still the vast majority of RESTful APIs do not adhere to the basic constraints/principals, such as hypermedia (HATEOAS).
 
 An API must be using hypermedia to transfer state and describe itself to a client in order to be considered RESTful, yet it seems this fundamental fact is lost in translation. Most people I ask about what makes an API RESTful still respond by talking about URL structure and HTTP verbs, there is still much we have to learn about the topic it seems (myself included)!
 
-### Architecture
+## Architecture
 
-Todo.
+todo...
+- show how the application tiering is constructed
+- show some of the hypermedia flows
+- show physical architecture relationship between client/api host/database
 
-### Assumptions, Notes and Stuff
+## Assumptions
 
+- An assumption was made that Pet can only have a single Owner assignment. I did this for simplicity more than anything else but the solution could be easily modified to support Pets having multiple Owner assignments.
 - An assumption was made that it is safe for error/exception detail to be returned to failed API calls. In most production scenarios, it is often wise to abstract this detail and provide a standardized set of error codes which can be referenced via API documentation. This is often done sue to the high chance of inadvertently exposing personally identifiable information (PII) or other sensitive data via exceptions/stack traces etc.
 
-## Setup
+# Setup
 
 <img height="100px" src="./pics/logo-setup.png">
 
-There is a nice [guide from Microsoft](https://www.microsoft.com/net/learn/get-started/macos) on how to get setup running DotNetCore in 10mins, which would cover most requirements.
+This [guide from Microsoft](https://www.microsoft.com/net/learn/get-started/macos) shows how to get DotNetCore running on a clean machine in 10mins.
 
-### Individual Requirements
+## Dependencies
 
-- Visual Studio 2017 [setup guide](https://docs.microsoft.com/en-us/visualstudio/install/install-visual-studio)
-- DotNetCore [setup guide](https://www.microsoft.com/net/download/macos)
-- Docker [setup guide for MacOS](https://docs.docker.com/docker-for-mac/install/) or [setup guide for Windows](https://docs.docker.com/docker-for-windows/install/)
-- ELK container [container page](https://hub.docker.com/r/sebp/elk/)
+- Visual Studio 2017 [(setup guide)](https://docs.microsoft.com/en-us/visualstudio/install/install-visual-studio)
+- DotNetCore [(setup guide)](https://www.microsoft.com/net/download/macos)
+- Docker [(setup for MacOS)](https://docs.docker.com/docker-for-mac/install/) [(setup for Windows)](https://docs.docker.com/docker-for-windows/install/)
+- Postman [(setup guide)](https://www.getpostman.com/) (optional but recommended).
+- ElasticSearch [(docker hub)](https://hub.docker.com/r/sebp/elk/)
 
 ```text
 docker pull sebp/elk
 ```
 
-- Postman [setup guide](https://www.getpostman.com/) (optional but recommended).
 
-## Usage
+# Usage
 
-- If you have Visual Studio setup then you can simply open the solution and run/debug it from there. It will automatically run in a shell and allow you to debug if you prefer.
+- The solution will self-host using Kestral (light-weight web server bundled with dotnetcore).
+- The API runs over HTTP on TCP port 5000.
+- If you have Visual Studio setup then you can simply open the solution and run/debug it from there. It will automatically run in a shell and allow you to debug.
+- I recommend using Postman to access the API. There are both environment and endpoint confis you can import included in this repo under the /config folder.
 
-- Alternatively, you can compile/run it from command line (powershell/bash) as follows;
+To compile & run the solution from command line (powershell/bash) as follows;
 
 ```bash
 cd /src/PetRego/
 msbuild PetRego.sln
 ```
 
-- Run the application from a command line as follows;
+Run the application from a command line as follows;
 
 ```bash
 cd /src/PetRego/PetRego.AppHost/bin/Debug/netcoreapp2.0
@@ -225,57 +229,55 @@ Content root path: /src/PetRego/PetRego.AppHost/bin/Debug/netcoreapp2.0
 Now listening on: http://localhost:5000
 Application started. Press Ctrl+C to shut down.
 ```
-
-The site runs on localhost on port 5000
-I recommend using Postman to access the API. There are both environment and endpoint confis you can import included in this repo under the /config folder.
-
-## Hosting
+# Hosting
 
 When run locally, the solution is configured to self host using Kestral, the built in web server that ships with DotNetCore.
 
 todo - get the solution hosted on my AppHarbour account.
 
-## Future Improvements
+# Future Improvements
 
-### Caching
+## Caching
 
 Whilst I understand this to be one of the core constraints of REST architecture, I have omitted it in order to work within time constraints (plus it wasn't mentioned in the brief). I would implement this at the service layer in order to minimize the calls being made to the data source.
 
-### Authentication
+## Authentication
 
 The solution does not implement any authentication as per the brief. The simplest and most common way is basic auth, whereby a set of credentials or a key is sent in the headers and validated on the server prior to performing any operation. More complex implementations may involve an OAuth flow. One such flow works by the client sending an initial auth request containing set of creds or key which is validated by the server (and possibly with a 3rd party provider) which responds with a session token which may have some expiration time. Subsequent requests from the client contain this token which is used to maintain verification state. Finally there would be an operation whereby the client can request the token to be 'refreshed' or re-verified based on a set of creds or a key.
 
-### Testing
+## Testing
 
 Unit testing (mocking) of the actual API controllers has not been done due to time constraints. Whilst the controllers are lightweight and contain very little actual logic, they are where I enrich the responses with hypermedia, so this being a core feature of a REST API means it must have test coverage. With more time, I would like to add more varied test setups and test more negative scenarios, particularly around testing the services.
 
 **I honestly admit that the general test coverage in this project as it stands is very low and well below an acceptable 'production-ready' standard.**
 
-With more time, I would like to add integration testing code which would add testing data. This code might be Javascript so that it can easily be bundled with the Postman config or run with Node / Mocha etc.
+With more time, I would like to add integration testing code which would add testing data. I would probably write these tests using Javascript, so they can easily be used in Postman tests or run standalone in Node / Mocha.
 
-An addition to this is, I would have liked to demonstrate an implementation of contract-based testing [using PACT](https://docs.pact.io/), primarily as a learning exercise but also as a reference point for possible future talks/projects or mentoring colleagues.
+I would also like to demonstrate an implementation of contract-based testing [using PACT](https://docs.pact.io/), primarily as a learning exercise but also as a reference point for possible future talks/projects or mentoring colleagues.
 
-### Logging
+## Logging
 
 Currently the API logs nothing. As I focused on items for the brief, with limited time I decided to omit this, at great pains. Given more time I would implement a simple NLog interface in the services at least, to provide basic transparency on what the apps is doing. Longer term I would extend this to log to a data store, possible another ELK instance.
 
-### Dashboards
+## Dashboards
 
 Given more time, I would like to build a basic dashboard in Kibana showing breakdown of customer order volumes, pet type breakdown and other interesting metrics.
 
-### API / Hypermedia
+## API / Hypermedia
 
-Given more time I would implement 'recipes' or 'templates' in the responses, which would instruct a client the exact schema required for example to create new records. At present I have not done this, so a client would not know what is required to use these endpoints. The un-discoverable nature of this technically makes those endpoints un-RESTful, if that's a word.
+I decided to write my own code for the hypermedia responses. Whilst this achieves the desired goal, I feel that the code is far from elegant and adds code smell to the services. A more elegant solution would have 
 
-### Packaging
+Given more time I would implement templates (or 'recipes') in the responses where complex requests are expected (such as creates / updates). These would instruct a client the exact request schema required for these actions. I feel that the lack of these templates on these endpoints technically leaves these being un-RESTful (if that's a word) because a client cannot discover how to use these endpoints.
+
+## Packaging
 
 Given time I would like to containerize the solution by creating a Docker file which self hosts the application on top of a lightweight Linux image, making it easy to host anywhere.
 
-## Remaining Work to Meet The Brief
+# Remaining Work to Meet The Brief
 
 - Add endpoint to retrieve pets counts aggregated by pet type (for food ordering).
 
-## References & Inspiration
+# References & Inspiration
 
 - [GOTO 2014 • REST: I don't Think it Means What You Think it Does • Stefan Tilkov](https://www.youtube.com/watch?v=pspy1H6A3FM)
 - [The REST And Then Some](https://www.youtube.com/watch?v=QIv9YR1bMwY)
