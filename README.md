@@ -69,6 +69,10 @@ We know that:
 - I developed this on MacOS with VisualStudio 2017 Community Edition. No ReSharper or linting addons, just coding bare-back...I really miss ReSharper!
 - The solution is not complete or production-ready by any means, but I have commented and marked todo items to indicate this and added a section below on future improvements.
 
+## Documentation
+
+For this I added Swashbuckle to the app host. Swashbuckle comprises three packages – a Swagger generator, middleware to expose the generated Swagger as JSON endpoints and middleware to expose a Swagger UI that’s powered by these endpoints. It does a nice job of inspecting your API structure and presents a nice UI. See the Usage section below for details.
+
 ## Data Layer
 I originally considered using a relational database, possibly Microsoft SQL Server. Together with a mature ORM such as Entity Framework this would work nicely with WebApi. I chose however to take a challenge and use a completely different approach, implementing Elastic Search using the NEST SDK. 
 
@@ -205,12 +209,11 @@ docker pull sebp/elk
 ```
 
 
-# Usage
+# Running
 
-- The solution will self-host using Kestral (light-weight web server bundled with dotnetcore).
-- The API runs over HTTP on TCP port 5000.
-- If you have Visual Studio setup then you can simply open the solution and run/debug it from there. It will automatically run in a shell and allow you to debug.
-- I recommend using Postman to access the API. There are both environment and endpoint confis you can import included in this repo under the /config folder.
+The solution will self-host using Kestral (light-weight web server bundled with dotnetcore). 
+
+If you have Visual Studio setup then you can simply open the solution and run/debug it from there. It will automatically run in a shell and allow you to debug.
 
 To compile & run the solution from command line (powershell/bash) as follows;
 
@@ -234,11 +237,32 @@ Content root path: /src/PetRego/PetRego.AppHost/bin/Debug/netcoreapp2.0
 Now listening on: http://localhost:5000
 Application started. Press Ctrl+C to shut down.
 ```
+
+# Usage
+
+I recommend using Postman to access the API. There are both environment and endpoint confis you can import included in this repo under the /config folder. There is a discovery endpoint which responds at the root of the API with links which should be enough to get you going. 
+
+To access the discovery endpoint simply fire a GET request off to;
+
+```text
+http://localhost:5000/api
+```
+
+<img src="./pics/postman.png">
+
+If Postman isn't really your bag, I added a Swagger doc endpoint. This is the most visual way to interact with the API. 
+
+To use this simply open this link in your browser once the site is running;
+
+```text
+http://localhost:5000/swagger
+```
+
+<img src="./pics/swagger.png">
+
 # Hosting
 
-When run locally, the solution is configured to self host using Kestral, the built in web server that ships with DotNetCore.
-
-todo - get the solution hosted on my AppHarbour account.
+todo - get the solution hosted on my AWS account.
 
 # Future Improvements
 
