@@ -219,6 +219,12 @@ Application started. Press Ctrl+C to shut down.
 The site runs on localhost on port 5000
 I recommend using Postman to access the API. There are both environment and endpoint confis you can import included in this repo under the /config folder.
 
+## Hosting
+
+When run locally, the solution is configured to self host using Kestral, the built in web server that ships with DotNetCore.
+
+todo - get the solution hosted on my AppHarbour account.
+
 ## Future Improvements
 
 ### Caching
@@ -250,6 +256,10 @@ Given more time, I would like to build a basic dashboard in Kibana showing break
 ### API / Hypermedia
 
 Given more time I would implement 'recipes' or 'templates' in the responses, which would instruct a client the exact schema required for example to create new records. At present I have not done this, so a client would not know what is required to use these endpoints. The un-discoverable nature of this technically makes those endpoints un-RESTful, if that's a word.
+
+### Packaging
+
+Given time I would like to containerize the solution by creating a Docker file which self hosts the application on top of a lightweight Linux image, making it easy to host anywhere.
 
 ## Remaining Work to Meet The Brief
 
