@@ -23,32 +23,19 @@ namespace PetRego.Api
 
         public async Task<MultiResponse> Search(string field, string value)
         {
-            // todo - these min param length contraints are present because of the 
-            //        way I hacked together the search method in the ElasticSearch repo.
-            //        I could improve that so that the contraints are not needed.
-            const int MinParamLength = 4;
             if (string.IsNullOrEmpty(field))
             {
                 return new MultiResponse(Result.BadRequest, new Metadata(Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method)), $"Parameter cannot be null : field");
             }
-            if (field.Length < MinParamLength)
-            {
-                return new MultiResponse(Result.BadRequest, new Metadata(Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method)), $"Parameter 'field' length must be {MinParamLength} or greater");
-            }
             if (string.IsNullOrEmpty(value))
             {
                 return new MultiResponse(Result.BadRequest, new Metadata(Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method)), $"Parameter cannot be null : value");
-            }
-            if (value.Length < MinParamLength)
-            {
-                return new MultiResponse(Result.BadRequest, new Metadata(Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method)), $"Parameter 'value' length must be {MinParamLength} or greater");
             }
 
             var metadata = new Metadata(new[]
             {
                 Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method),
             });
-
             try
             {
                 var petEntities = await PetRepository.Search(field, value);
@@ -84,10 +71,13 @@ namespace PetRego.Api
                 // todo - provide an action template instructing how to create a new item
                 // todo - provide an action template instructing how to update an existing item
             });
-
             try
             {
                 var petEntity = await PetRepository.Get(id);
+                if (petEntity == null)
+                {
+                    return new SingleResponse(Result.NotFound, new Metadata(Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method)), $"No Pet exists with the ID : {id}");
+                }
                 var petModel = Mapper.Map<PetModel>(petEntity);
                 return new SingleResponse(Result.Success, metadata, petModel);
             }
@@ -119,7 +109,6 @@ namespace PetRego.Api
                 Link.Edit($"{Constants.TOKENIZED_CURRENT_URL}/{pet.Id}", HttpMethod.Put.Method),
                 Link.Delete($"{Constants.TOKENIZED_CURRENT_URL}/{pet.Id}", HttpMethod.Delete.Method),
             });
-
             try
             {
                 var petEntity = Mapper.Map<PetEntity>(pet);
@@ -149,11 +138,14 @@ namespace PetRego.Api
                 Link.Custom("detail", $"{Constants.TOKENIZED_CURRENT_URL}/{pet.Id}/detail", HttpMethod.Get.Method),
                 Link.Delete($"{Constants.TOKENIZED_CURRENT_URL}/{pet.Id}", HttpMethod.Delete.Method),
             });
-
             try
             {
                 var petEntity = Mapper.Map<PetEntity>(pet);
                 var updated = await PetRepository.Update(petEntity);
+                if (!updated)
+                {
+                    return new Response(Result.NotFound, new Metadata(Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Put.Method)), $"No Pet exists with the ID : {pet.Id}");
+                }
                 return new Response(Result.Updated, metadata);
             }
             catch (DataException<PetEntity> ex)
@@ -177,10 +169,13 @@ namespace PetRego.Api
             {
                 Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Delete.Method),
             });
-
             try
             {
                 var deleted = await PetRepository.Delete(id);
+                if (!deleted)
+                {
+                    return new Response(Result.NotFound, new Metadata(Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Delete.Method)), $"No Pet exists with the ID : {id}");
+                }
                 return new Response(Result.Deleted, metadata);
             }
             catch (DataException<PetEntity> ex)

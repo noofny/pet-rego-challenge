@@ -25,32 +25,19 @@ namespace PetRego.Api
 
         public async Task<MultiResponse> Search(string field, string value)
         {
-            // todo - these min param length contraints are present because of the 
-            //        way I hacked together the search method in the ElasticSearch repo.
-            //        I could improve that so that the contraints are not needed.
-            const int MinParamLength = 4;
             if (string.IsNullOrEmpty(field))
             {
                 return new MultiResponse(Result.BadRequest, new Metadata(Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method)), $"Parameter cannot be null : field");
             }
-            if (field.Length < MinParamLength)
-            {
-                return new MultiResponse(Result.BadRequest, new Metadata(Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method)), $"Parameter 'field' length must be {MinParamLength} or greater");
-            }
             if (string.IsNullOrEmpty(value))
             {
                 return new MultiResponse(Result.BadRequest, new Metadata(Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method)), $"Parameter cannot be null : value");
-            }
-            if (value.Length < MinParamLength)
-            {
-                return new MultiResponse(Result.BadRequest, new Metadata(Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method)), $"Parameter 'value' length must be {MinParamLength} or greater");
             }
 
             var metadata = new Metadata(new[]
             {
                 Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method),
             });
-
             try
             {
                 var ownerEntities = await OwnerRepository.Search(field, value);
@@ -89,10 +76,13 @@ namespace PetRego.Api
                 // todo - provide an action template instructing how to create a new item
                 // todo - provide an action template instructing how to update an existing item
             });
-
             try
             {
                 var ownerEntity = await OwnerRepository.Get(id);
+                if (ownerEntity == null)
+                {
+                    return new SingleResponse(Result.NotFound, new Metadata(Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method)), $"No Owner exists with the ID : {id}");
+                }
                 var petEntities = await PetRepository.Search("ownerId", id); // todo - get by foreign key/index lookup
                 var ownerSummaryModel = Mapper.Map<OwnerSummaryModel>(ownerEntity);
                 return new SingleResponse(Result.Success, metadata, ownerSummaryModel);
@@ -124,10 +114,13 @@ namespace PetRego.Api
                 // todo - provide an action template instructing how to create a new item
                 // todo - provide an action template instructing how to update an existing item
             });
-
             try
             {
                 var ownerEntity = await OwnerRepository.Get(id);
+                if (ownerEntity == null)
+                {
+                    return new SingleResponse(Result.NotFound, new Metadata(Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method)), $"No Owner exists with the ID : {id}");
+                }
                 var petEntities = await PetRepository.Search("ownerId", id); // todo - get by foreign key/index lookup
                 foreach(var petEntity in petEntities)
                 {
@@ -165,7 +158,6 @@ namespace PetRego.Api
                 Link.Edit($"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{owner.Id}", HttpMethod.Put.Method),
                 Link.Delete($"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{owner.Id}", HttpMethod.Delete.Method),
             });
-
             try
             {
                 var entity = Mapper.Map<OwnerEntity>(owner);
@@ -196,11 +188,14 @@ namespace PetRego.Api
                 Link.Custom("detail", $"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{owner.Id}/detail", HttpMethod.Get.Method),
                 Link.Delete($"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{owner.Id}", HttpMethod.Delete.Method),
             });
-
             try
             {
                 var entity = Mapper.Map<OwnerEntity>(owner);
                 var updated = await OwnerRepository.Update(entity);
+                if (!updated)
+                {
+                    return new Response(Result.NotFound, new Metadata(Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Put.Method)), $"No Owner exists with the ID : {owner.Id}");
+                }
                 return new Response(Result.Updated, metadata);
             }
             catch (DataException<OwnerEntity> ex)
@@ -224,10 +219,13 @@ namespace PetRego.Api
             {
                 Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Delete.Method),
             });
-
             try
             {
                 var deleted = await OwnerRepository.Delete(id);
+                if (!deleted)
+                {
+                    return new Response(Result.NotFound, new Metadata(Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Delete.Method)), $"No Owner exists with the ID : {id}");
+                }
                 return new Response(Result.Deleted, metadata);
             }
             catch (DataException<OwnerEntity> ex)
