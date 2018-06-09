@@ -70,12 +70,17 @@ We know that:
 - The solution is not complete or production-ready by any means, but I have commented and marked todo items to indicate this and added a section below on future improvements.
 
 ## Data Layer
-I originally considered using a relational database, possibly Microsoft SQL Server. Together with a mature ORM such as Entity Framework this would work nicely with WebApi. I chose however to take a challenge and use a completely different approach, implementing Elastic Search using the NEST SDK. I did this for the following advantages;
+I originally considered using a relational database, possibly Microsoft SQL Server. Together with a mature ORM such as Entity Framework this would work nicely with WebApi. I chose however to take a challenge and use a completely different approach, implementing Elastic Search using the NEST SDK. 
+
+I did this for the following advantages;
+
 - :green_heart: To try something different.
 - :green_heart: To challenge myself and further my knowledge of the technology.
 - :green_heart: To simplify setup - simply using a pre-compiled Docker image of an entire ELK stack.
 - :green_heart: To leverage data visualization tools that come out of the box with Kibana.
+
 ...however with the following disadvantages...
+
 - :broken_heart: Added time and complexity to deliver the solution.
 - :broken_heart: Repository code is not as succinct and elegant compared to coding against Entity Framework contexts.
 - :broken_heart: Does not smoothly integrate with WebApi.
