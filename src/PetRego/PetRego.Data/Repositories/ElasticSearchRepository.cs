@@ -2,10 +2,14 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Linq.Dynamic;
+using System.Linq.Dynamic.Core;
 using Nest;
 using Nest.JsonNetSerializer;
 using Elasticsearch.Net;
 using PetRego.Common;
+using PetRego.Models;
 using AutoMapper;
 
 namespace PetRego.Data
@@ -74,7 +78,7 @@ namespace PetRego.Data
             {
                 throw new DataException<T>(
                     "Get",
-                    Mapper.Map<Models.Result>(Result.Error),
+                    Mapper.Map<Models.Result>(Nest.Result.Error),
                     $"{response.OriginalException.Message}{Environment.NewLine}{response.ServerError}{Environment.NewLine}{response.DebugInformation}",
                     response.OriginalException
                 );
@@ -90,7 +94,7 @@ namespace PetRego.Data
             {
                 throw new DataException<T>(
                     "List(index check)",
-                    Mapper.Map<Models.Result>(Result.Error),
+                    Mapper.Map<Models.Result>(Nest.Result.Error),
                     $"{indexResponse.OriginalException.Message}{Environment.NewLine}{indexResponse.ServerError}{Environment.NewLine}{indexResponse.DebugInformation}",
                     indexResponse.OriginalException
                 );
@@ -101,14 +105,14 @@ namespace PetRego.Data
                 return new List<T>();
             }
             var searchResponse = _client.Search<T>(s => s
-                .Index(_client.ConnectionSettings.DefaultIndex)
-                .Type(_client.ConnectionSettings.DefaultTypeName)
+                .Index(_defaultIndex)
+                .Type(_defaultTypeName)
                 .Query(q => q.QueryString(d => d.Query($"{field}={value}"))));
             if (!searchResponse.IsValid)
             {
                 throw new DataException<T>(
                     "Search",
-                    Mapper.Map<Models.Result>(Result.Error),
+                    Mapper.Map<Models.Result>(Nest.Result.Error),
                     $"{searchResponse.OriginalException.Message}{Environment.NewLine}{searchResponse.ServerError}{Environment.NewLine}{searchResponse.DebugInformation}",
                     searchResponse.OriginalException
                 );
@@ -120,7 +124,7 @@ namespace PetRego.Data
         {
             entity.Created = DateTime.UtcNow;
             var response = await _client.IndexDocumentAsync(entity);
-            if (response.Result != Result.Created || !response.IsValid)
+            if (response.Result != Nest.Result.Created || !response.IsValid)
             {
                 throw new DataException<T>(
                     "Add",
@@ -145,7 +149,7 @@ namespace PetRego.Data
                 .Upsert(entity)
                 .RetryOnConflict(WriteConflictRetries) // brute force optimistic concurrency
             );
-            if (response.Result != Result.Updated || !response.IsValid)
+            if (response.Result != Nest.Result.Updated || !response.IsValid)
             {
                 throw new DataException<T>(
                     "Update",
@@ -169,7 +173,7 @@ namespace PetRego.Data
             {
                 throw new DataException<T>(
                     "Delete(inded check)",
-                    Mapper.Map<Models.Result>(Result.Error),
+                    Mapper.Map<Models.Result>(Nest.Result.Error),
                     $"{indexResponse.OriginalException.Message}{Environment.NewLine}{indexResponse.ServerError}{Environment.NewLine}{indexResponse.DebugInformation}",
                     indexResponse.OriginalException
                 );
@@ -180,7 +184,7 @@ namespace PetRego.Data
                 return false;
             }
             var deleteResponse = await _client.DeleteAsync<T>(id);
-            if (!deleteResponse.IsValid && deleteResponse.Result != Result.NotFound)
+            if (!deleteResponse.IsValid && deleteResponse.Result != Nest.Result.NotFound)
             {
                 throw new DataException<T>(
                     "Delete",
@@ -190,6 +194,57 @@ namespace PetRego.Data
                 );
             }
             return true;
+        }
+
+
+        /// <summary>
+        /// This has to be some of the worst code I have written and I'm not happy at all about it.
+        ///   - This is a horrible way to aggregate data, period.
+        ///   - The NEST SDK retricts results to 10 items, int.Max gets rejected, so this is utterly broken.
+        ///   - NEST provides calls for aggregates, but I just couldn't get it working in time.
+        ///   - The dynamic LINQ library I used is old, poorly documents and really just a convenience.
+        ///   - Performance is just terrible here.
+        ///   
+        /// todo  - FIX IT! 
+        /// 
+        /// </summary>
+        /// <returns>Gets aggregation metrics based on the given grouping field.</returns>
+        /// <param name="groupBy">The field to group by.</param>
+        /// <typeparam name="K">The resulting aggregation results, if you're lucky.</typeparam>
+        public async Task<List<Aggregate>> Count<K>(string groupBy)
+        {
+            try
+            {
+                var response = await _client.SearchAsync<T>(s => s
+                    .Index(_defaultIndex)
+                    .Type(_defaultTypeName)
+                );
+                if (!response.IsValid)
+                {
+                    throw new DataException<T>(
+                        "Count",
+                        Mapper.Map<Models.Result>(Nest.Result.Error),
+                        $"{response.OriginalException.Message}{Environment.NewLine}{response.ServerError}{Environment.NewLine}{response.DebugInformation}",
+                        response.OriginalException
+                    );
+                }
+
+                var result = new List<Aggregate>();
+                var items = response.Documents.AsQueryable();
+                var grouped = items.GroupBy(groupBy, "it").Cast<IGrouping<K, T>>();
+                foreach (var group in grouped)
+                {
+                    var key = group.Key.ToString();
+                    var count = group.Count();
+                    result.Add(new Aggregate(groupBy, key, count));
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                var thing = ex.Message;
+                return null;
+            }
         }
 
     }
