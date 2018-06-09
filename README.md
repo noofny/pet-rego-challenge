@@ -71,8 +71,18 @@ I decided to build an API using WebApi on DotNetCore and leverage a few technolo
 
 - I chose to build a WebAPI project using DotNetCore. This was purely to learn the framework as I believe it is a strongly emerging technology for good reasons.
 - I developed this on MacOS with VisualStudio 2017 Community Edition. No ReSharper or linting addons, just coding bare-back...I really miss ReSharper!
-- I chose to use a containerized ELK stack (ElasticSearch, Lucene, Kibana) for the data persistence layer. Possibly a contentious decision, I chose this as a learning exercise and to provide some fun with data visualizations which are available "out of the box" with Kibana.
-- Mocking IElasticClient in my repositories proved to be a challenge, due to a lack of experience/docs/examples (or limitations) around async handling within the mocking framework I used (Moq). In order not to have this slow delivery I flagged as a todo item.
+
+### Data Layer
+I originally considered using a relational database, possibly Microsoft SQL Server. Together with a mature ORM such as Entity Framework this would work nicely with WebApi. I chose however to take a challenge and use a completely different approach, implementing Elastic Search using the NEST SDK. I did this for the following advantages;
+- :+1: To try something different.
+- :+1: To challenge myself and further my knowledge of the technology.
+- :+1: To simplify setup - simply using a pre-compiled Docker image of an entire ELK stack.
+- :+1: To leverage data visualization tools that come out of the box with Kibana.
+...however with the following disadvantages...
+- :-1: Added time and complexity to deliver the solution.
+- :-1: Repository code is not as succinct and elegant compared to coding against Entity Framework contexts.
+- :-1: Does not smoothly integrate with WebApi.
+- :-1: Harder to test, some testing has been left as a todo item (not happy about this at all).
 
 ### API Versioning
 
@@ -263,7 +273,6 @@ Given time I would like to containerize the solution by creating a Docker file w
 
 ## Remaining Work to Meet The Brief
 
-- Add endpoint to retrieve the pets for a given owner.
 - Add endpoint to retrieve pets counts aggregated by pet type (for food ordering).
 
 ## References & Inspiration
