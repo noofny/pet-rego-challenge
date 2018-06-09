@@ -16,18 +16,8 @@ namespace PetRego.AppHost
         }
 
 
-        //[HttpGet]
-        //[Route(Service.API_ROUTE_BASE_PATH + "owner/{ownerId}/pets")]
-        //public async Task<IResponse> Pets(string ownerId)
-        //{
-        //    var response = await PetService.Search("ownerId", ownerId);
-        //    ReplaceUrlTokens(response);
-        //    SetResponseCode(response.Result);
-        //    return response;
-        //}
-
         [HttpGet]
-        [Route(Service.API_ROUTE_BASE_PATH + Service.API_ROUTE_CONTROLLER_PATH + "search/{field}/{value}")]
+        [Route(Constants.API_ROUTE_BASE_PATH + Constants.API_ROUTE_CONTROLLER_PATH + "search/{field}/{value}")]
         public async Task<IResponse> Search(string field, string value)
         {
             var response = await PetService.Search(field, value);
@@ -37,7 +27,7 @@ namespace PetRego.AppHost
         }
 
         [HttpGet]
-        [Route(Service.API_ROUTE_BASE_PATH + Service.API_ROUTE_CONTROLLER_PATH + "{id}/detail")]
+        [Route(Constants.API_ROUTE_BASE_PATH + Constants.API_ROUTE_CONTROLLER_PATH + "{id}/detail")]
         public async Task<IResponse> Detail(string id)
         {
             var response = await PetService.Detail(id);
@@ -47,7 +37,7 @@ namespace PetRego.AppHost
         }
 
         [HttpPost]
-        [Route(Service.API_ROUTE_BASE_PATH + Service.API_ROUTE_CONTROLLER_PATH)]
+        [Route(Constants.API_ROUTE_BASE_PATH + Constants.API_ROUTE_CONTROLLER_PATH)]
         public async Task<IResponse> Create([FromBody]PetModel pet)
         {
             var response = await PetService.Create(pet);
@@ -57,7 +47,7 @@ namespace PetRego.AppHost
         }
 
         [HttpPut]
-        [Route(Service.API_ROUTE_BASE_PATH + Service.API_ROUTE_CONTROLLER_PATH + "{id}")]
+        [Route(Constants.API_ROUTE_BASE_PATH + Constants.API_ROUTE_CONTROLLER_PATH + "{id}")]
         public async Task<IResponse> Edit(string id, [FromBody]PetModel pet)
         {
             pet.Id = id;
@@ -68,7 +58,7 @@ namespace PetRego.AppHost
         }
 
         [HttpDelete]
-        [Route(Service.API_ROUTE_BASE_PATH + Service.API_ROUTE_CONTROLLER_PATH + "{id}")]
+        [Route(Constants.API_ROUTE_BASE_PATH + Constants.API_ROUTE_CONTROLLER_PATH + "{id}")]
         public async Task<IResponse> Delete(string id)
         {
             var response = await PetService.Delete(id);

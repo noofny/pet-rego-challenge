@@ -2,6 +2,7 @@
 using Moq;
 using Autofac.Extras.Moq;
 using PetRego.Api;
+using PetRego.Common;
 using PetRego.Data;
 using PetRego.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -28,7 +29,7 @@ namespace PetRego.UnitTests.ServiceTests
     /// 
     /// </summary>
     [TestClass]
-    public class OwnerServiceTests
+    public class OwnerServiceTests : ServiceTestsBase
     {
 
         [TestInitialize]
@@ -42,17 +43,17 @@ namespace PetRego.UnitTests.ServiceTests
         [TestMethod]
         public void Can_Search_Owners()
         {
-            var config = new TestConfig(); // todo - pull from container
             using (var mock = AutoMock.GetLoose())
             {
                 // Arrange
+                var config = mock.Provide<IAppConfig, TestConfig>();
                 var searchCriteria = new { field = "emailAddress", value = "test" };
                 var testOwner = GetTestOwner();
                 var expectedMetadata = new Metadata(new[]
                 {
-                    Link.Self($"{config.TokenizedBaseUrl}", HttpMethod.Get.Method),
-                    Link.Custom("summary", $"{config.TokenizedBaseUrl}/{{id}}/summary", HttpMethod.Get.Method),
-                    Link.Custom("detail", $"{config.TokenizedBaseUrl}/{{id}}/detail", HttpMethod.Get.Method),
+                    Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method),
+                    Link.Custom("summary", $"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testOwner.Id}/summary", HttpMethod.Get.Method),
+                    Link.Custom("detail", $"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testOwner.Id}/detail", HttpMethod.Get.Method),
                 });
                 var expectedOwners = new List<OwnerEntity> { testOwner };
                 var expected = new MultiResponse(Result.Success, expectedMetadata, expectedOwners.Select(Mapper.Map<OwnerEntity, OwnerSummaryModel>).OfType<IModel>().ToList());
@@ -73,26 +74,25 @@ namespace PetRego.UnitTests.ServiceTests
                 Assert.AreEqual(expected.Data.Count, actual.Data.Count);
                 // todo - compare and assert the actual data
                 Assert.AreEqual(expected.Metadata.ServerVersion, actual.Metadata.ServerVersion);
-                Assert.AreEqual(expected.Metadata.Links.Count, actual.Metadata.Links.Count);
-                // todo - compare and assert the actual links
+                Assert.IsTrue(MetadataLinksAreEqual(expected.Metadata.Links, actual.Metadata.Links));
             }
         }
 
         [TestMethod]
         public void Can_Get_Owner_Summary()
         {
-            var config = new TestConfig(); // todo - pull from container
             using (var mock = AutoMock.GetLoose())
             {
                 // Arrange
+                var config = mock.Provide<IAppConfig, TestConfig>();
                 var testOwner = GetTestOwner();
                 var expectedMetadata = new Metadata(new[]
                 {
-                    Link.Self($"{config.TokenizedBaseUrl}", HttpMethod.Get.Method),
-                    Link.Edit($"{config.TokenizedBaseUrl}", HttpMethod.Put.Method),
-                    Link.Delete($"{config.TokenizedBaseUrl}", HttpMethod.Delete.Method),
-                    Link.Custom("detail", $"{config.TokenizedBaseUrl}/detail", HttpMethod.Get.Method),
-                    Link.Custom("pets", $"{config.TokenizedBaseUrl}/pets", HttpMethod.Get.Method),
+                    Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method),
+                    Link.Custom("detail", $"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testOwner.Id}/detail", HttpMethod.Get.Method),
+                    Link.Edit($"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testOwner.Id}", HttpMethod.Put.Method),
+                    Link.Delete($"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testOwner.Id}", HttpMethod.Delete.Method),
+                    Link.Custom("pets", $"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}pet/search/ownerId/{testOwner.Id}", HttpMethod.Get.Method),
                 });
                 var expectedOwner = Mapper.Map<OwnerEntity, OwnerSummaryModel>(testOwner);
                 var expected = new SingleResponse(Result.Success, expectedMetadata, expectedOwner);
@@ -118,20 +118,19 @@ namespace PetRego.UnitTests.ServiceTests
                 Assert.AreEqual(expectedOwner.FirstName, actualOwner.FirstName);
                 Assert.AreEqual(expectedOwner.LastName, actualOwner.LastName);
                 Assert.AreEqual(expected.Metadata.ServerVersion, actual.Metadata.ServerVersion);
-                Assert.AreEqual(expected.Metadata.Links.Count, actual.Metadata.Links.Count);
-                // todo - compare and assert the actual links
+                Assert.IsTrue(MetadataLinksAreEqual(expected.Metadata.Links, actual.Metadata.Links));
             }
         }
 
         [TestMethod]
         public void Can_Get_Owner_Summary_Handles_Bad_Request()
         {
-            var config = new TestConfig(); // todo - pull from container
             using (var mock = AutoMock.GetLoose())
             {
                 // Arrange
+                var config = mock.Provide<IAppConfig, TestConfig>();
                 var testOwner = GetTestOwner();
-                var expectedMetadata = new Metadata(Link.Self($"{config.TokenizedBaseUrl}", HttpMethod.Get.Method));
+                var expectedMetadata = new Metadata(Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method));
                 var expectedOwner = Mapper.Map<OwnerEntity, OwnerSummaryModel>(testOwner);
                 var expected = new SingleResponse(Result.BadRequest, expectedMetadata, expectedOwner);
                 var systemUnderTest = mock.Create<OwnerService>();
@@ -150,26 +149,25 @@ namespace PetRego.UnitTests.ServiceTests
                 Assert.IsNotNull(actual.Metadata);
                 Assert.IsNotNull(actual.Metadata.Links);
                 Assert.AreEqual(expected.Metadata.ServerVersion, actual.Metadata.ServerVersion);
-                Assert.AreEqual(expected.Metadata.Links.Count, actual.Metadata.Links.Count);
-                // todo - compare and assert the actual links
+                Assert.IsTrue(MetadataLinksAreEqual(expected.Metadata.Links, actual.Metadata.Links));
             }
         }
 
         [TestMethod]
         public void Can_Get_Owner_Summary_Handles_Server_Error()
         {
-        var config = new TestConfig(); // todo - pull from container
             using (var mock = AutoMock.GetLoose())
             {
                 // Arrange
+                var config = mock.Provide<IAppConfig, TestConfig>();
                 var testOwner = GetTestOwner();
                 var expectedMetadata = new Metadata(new[]
                 {
-                    Link.Self($"{config.TokenizedBaseUrl}", HttpMethod.Get.Method),
-                    Link.Edit($"{config.TokenizedBaseUrl}", HttpMethod.Put.Method),
-                    Link.Delete($"{config.TokenizedBaseUrl}", HttpMethod.Delete.Method),
-                    Link.Custom("detail", $"{config.TokenizedBaseUrl}/detail", HttpMethod.Get.Method),
-                    Link.Custom("pets", $"{config.TokenizedBaseUrl}/pets", HttpMethod.Get.Method),
+                    Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method),
+                    Link.Custom("detail", $"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testOwner.Id}/detail", HttpMethod.Get.Method),
+                    Link.Edit($"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testOwner.Id}", HttpMethod.Put.Method),
+                    Link.Delete($"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testOwner.Id}", HttpMethod.Delete.Method),
+                    Link.Custom("pets", $"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}pet/search/ownerId/{testOwner.Id}", HttpMethod.Get.Method),
                 });
                 var expectedOwner = Mapper.Map<OwnerEntity, OwnerSummaryModel>(testOwner);
                 var expected = new SingleResponse(Result.InternalError, expectedMetadata, expectedOwner);
@@ -190,27 +188,26 @@ namespace PetRego.UnitTests.ServiceTests
                 Assert.IsNotNull(actual.Metadata);
                 Assert.IsNotNull(actual.Metadata.Links);
                 Assert.AreEqual(expected.Metadata.ServerVersion, actual.Metadata.ServerVersion);
-                Assert.AreEqual(expected.Metadata.Links.Count, actual.Metadata.Links.Count);
-                // todo - compare and assert the actual links
+                Assert.IsTrue(MetadataLinksAreEqual(expected.Metadata.Links, actual.Metadata.Links));
             }
         }
 
         [TestMethod]
         public void Can_Create_Owner()
         {
-            var config = new TestConfig(); // todo - pull from container
             using (var mock = AutoMock.GetLoose())
             {
                 // Arrange
+                var config = mock.Provide<IAppConfig, TestConfig>();
                 var testOwner = GetTestOwner();
                 var expectedMetadata = new Metadata(new[]
                 {
-                    Link.Self($"{config.TokenizedBaseUrl}", HttpMethod.Post.Method),
-                    Link.Custom("summary", $"{config.TokenizedBaseUrl}/{testOwner.Id}/summary", HttpMethod.Get.Method),
-                    Link.Custom("detail", $"{config.TokenizedBaseUrl}/{testOwner.Id}/detail", HttpMethod.Get.Method),
-                    Link.Edit($"{config.TokenizedBaseUrl}/{testOwner.Id}", HttpMethod.Put.Method),
-                    Link.Delete($"{config.TokenizedBaseUrl}/{testOwner.Id}", HttpMethod.Delete.Method),
-            });
+                    Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Post.Method),
+                    Link.Custom("summary", $"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testOwner.Id}/summary", HttpMethod.Get.Method),
+                    Link.Custom("detail", $"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testOwner.Id}/detail", HttpMethod.Get.Method),
+                    Link.Edit($"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testOwner.Id}", HttpMethod.Put.Method),
+                    Link.Delete($"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testOwner.Id}", HttpMethod.Delete.Method),
+                });
                 var expectedOwner = Mapper.Map<OwnerEntity, OwnerDetailModel>(testOwner);
                 var expected = new Response(Result.Created, expectedMetadata);
                 mock.Mock<IRepository<OwnerEntity>>().Setup(x => x.Add(It.IsAny<OwnerEntity>())).ReturnsAsync(true);
@@ -228,26 +225,24 @@ namespace PetRego.UnitTests.ServiceTests
                 Assert.IsNotNull(actual.Metadata);
                 Assert.IsNotNull(actual.Metadata.Links);
                 Assert.AreEqual(expected.Metadata.ServerVersion, actual.Metadata.ServerVersion);
-                Assert.AreEqual(expected.Metadata.Links.Count, actual.Metadata.Links.Count);
-                // todo - compare and assert the actual links
-
+                Assert.IsTrue(MetadataLinksAreEqual(expected.Metadata.Links, actual.Metadata.Links));
             }
         }
 
         [TestMethod]
         public void Can_Update_Owner()
         {
-            var config = new TestConfig(); // todo - pull from container
             using (var mock = AutoMock.GetLoose())
             {
                 // Arrange
+                var config = mock.Provide<IAppConfig, TestConfig>();
                 var testOwner = GetTestOwner();
                 var expectedMetadata = new Metadata(new[]
                 {
-                    Link.Self($"{config.TokenizedBaseUrl}", HttpMethod.Put.Method),
-                    Link.Custom("summary", $"{config.TokenizedBaseUrl}/{testOwner.Id}/summary", HttpMethod.Get.Method),
-                    Link.Custom("detail", $"{config.TokenizedBaseUrl}/{testOwner.Id}/detail", HttpMethod.Get.Method),
-                    Link.Delete($"{config.TokenizedBaseUrl}/{testOwner.Id}", HttpMethod.Delete.Method),
+                    Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Put.Method),
+                    Link.Custom("summary", $"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testOwner.Id}/summary", HttpMethod.Get.Method),
+                    Link.Custom("detail", $"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testOwner.Id}/detail", HttpMethod.Get.Method),
+                    Link.Delete($"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testOwner.Id}", HttpMethod.Delete.Method),
                 });
                 var expectedOwner = Mapper.Map<OwnerEntity, OwnerDetailModel>(testOwner);
                 var expected = new Response(Result.Updated, expectedMetadata);
@@ -266,8 +261,7 @@ namespace PetRego.UnitTests.ServiceTests
                 Assert.IsNotNull(actual.Metadata);
                 Assert.IsNotNull(actual.Metadata.Links);
                 Assert.AreEqual(expected.Metadata.ServerVersion, actual.Metadata.ServerVersion);
-                Assert.AreEqual(expected.Metadata.Links.Count, actual.Metadata.Links.Count);
-                // todo - compare and assert the actual links
+                Assert.IsTrue(MetadataLinksAreEqual(expected.Metadata.Links, actual.Metadata.Links));
             }
         }
 
@@ -275,14 +269,14 @@ namespace PetRego.UnitTests.ServiceTests
         [TestMethod]
         public void Can_DeleteOwner()
         {
-            var config = new TestConfig(); // todo - pull from container
             using (var mock = AutoMock.GetLoose())
             {
                 // Arrange
+                var config = mock.Provide<IAppConfig, TestConfig>();
                 var testOwner = GetTestOwner();
                 var expectedMetadata = new Metadata(new[]
                 {
-                    Link.Self($"{config.TokenizedBaseUrl}", HttpMethod.Delete.Method),
+                    Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Delete.Method),
                 });
                 var expected = new Response(Result.Deleted, expectedMetadata);
                 mock.Mock<IRepository<OwnerEntity>>().Setup(x => x.Delete(testOwner.Id)).ReturnsAsync(true);
@@ -300,22 +294,8 @@ namespace PetRego.UnitTests.ServiceTests
                 Assert.IsNotNull(actual.Metadata);
                 Assert.IsNotNull(actual.Metadata.Links);
                 Assert.AreEqual(expected.Metadata.ServerVersion, actual.Metadata.ServerVersion);
-                Assert.AreEqual(expected.Metadata.Links.Count, actual.Metadata.Links.Count);
-                // todo - compare and assert the actual links
-
+                Assert.IsTrue(MetadataLinksAreEqual(expected.Metadata.Links, actual.Metadata.Links));
             }
-        }
-
-
-
-        OwnerEntity GetTestOwner()
-        {
-            return new OwnerEntity
-            {
-                EmailAddress = "test@test.com",
-                FirstName = "Test",
-                LastName = "McTester"
-            };
         }
 
 

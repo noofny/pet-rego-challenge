@@ -2,6 +2,7 @@
 using Moq;
 using Autofac.Extras.Moq;
 using PetRego.Api;
+using PetRego.Common;
 using PetRego.Data;
 using PetRego.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -28,7 +29,7 @@ namespace PetRego.UnitTests.ServiceTests
     /// 
     /// </summary>
     [TestClass]
-    public class PetServiceTests
+    public class PetServiceTests : ServiceTestsBase
     {
 
         [TestInitialize]
@@ -42,16 +43,16 @@ namespace PetRego.UnitTests.ServiceTests
         [TestMethod]
         public void Can_Search_Pets()
         {
-            var config = new TestConfig(); // todo - pull from container
             using (var mock = AutoMock.GetLoose())
             {
                 // Arrange
+                var config = mock.Provide<IAppConfig, TestConfig>();
                 var searchCriteria = new { field = "name", value = "mina" };
                 var testPet = GetTestPet();
                 var expectedMetadata = new Metadata(new[]
                 {
-                    Link.Self($"{config.TokenizedBaseUrl}", HttpMethod.Get.Method),
-                    Link.Custom("detail", $"{config.TokenizedBaseUrl}/{{id}}/detail", HttpMethod.Get.Method),
+                    Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method),
+                    Link.Custom("detail", $"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testPet.Id}/detail", HttpMethod.Get.Method),
                 });
                 var expectedPets = new List<PetEntity> { testPet };
                 var expected = new MultiResponse(Result.Success, expectedMetadata, expectedPets.Select(Mapper.Map<PetEntity, PetModel>).OfType<IModel>().ToList());
@@ -72,24 +73,22 @@ namespace PetRego.UnitTests.ServiceTests
                 Assert.AreEqual(expected.Data.Count, actual.Data.Count);
                 // todo - compare and assert the actual data
                 Assert.AreEqual(expected.Metadata.ServerVersion, actual.Metadata.ServerVersion);
-                Assert.AreEqual(expected.Metadata.Links.Count, actual.Metadata.Links.Count);
-                // todo - compare and assert the actual links
+                Assert.IsTrue(MetadataLinksAreEqual(expected.Metadata.Links, actual.Metadata.Links));
             }
         }
 
         [TestMethod]
         public void Can_Get_Pet_Detail()
         {
-            var config = new TestConfig(); // todo - pull from container
             using (var mock = AutoMock.GetLoose())
             {
-                // Arrange
+                var config = mock.Provide<IAppConfig, TestConfig>();
                 var testPet = GetTestPet();
                 var expectedMetadata = new Metadata(new[]
                 {
-                    Link.Self($"{config.TokenizedBaseUrl}", HttpMethod.Get.Method),
-                    Link.Edit($"{config.TokenizedBaseUrl}", HttpMethod.Put.Method),
-                    Link.Delete($"{config.TokenizedBaseUrl}", HttpMethod.Delete.Method),
+                    Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method),
+                    Link.Edit($"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testPet.Id}", HttpMethod.Put.Method),
+                    Link.Delete($"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testPet.Id}", HttpMethod.Delete.Method),
                 });
                 var expectedPet = Mapper.Map<PetEntity, PetModel>(testPet);
                 var expected = new SingleResponse(Result.Success, expectedMetadata, expectedPet);
@@ -117,20 +116,19 @@ namespace PetRego.UnitTests.ServiceTests
                 Assert.AreEqual(expectedPet.Description, actualPet.Description);
                 Assert.AreEqual(expectedPet.Breed, actualPet.Breed);
                 Assert.AreEqual(expected.Metadata.ServerVersion, actual.Metadata.ServerVersion);
-                Assert.AreEqual(expected.Metadata.Links.Count, actual.Metadata.Links.Count);
-                // todo - compare and assert the actual links
+                Assert.IsTrue(MetadataLinksAreEqual(expected.Metadata.Links, actual.Metadata.Links));
             }
         }
 
         [TestMethod]
         public void Can_Get_Pet_Handles_Bad_Request()
         {
-            var config = new TestConfig(); // todo - pull from container
             using (var mock = AutoMock.GetLoose())
             {
                 // Arrange
+                var config = mock.Provide<IAppConfig, TestConfig>();
                 var testPet = GetTestPet();
-                var expectedMetadata = new Metadata(Link.Self($"{config.TokenizedBaseUrl}", HttpMethod.Get.Method));
+                var expectedMetadata = new Metadata(Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method));
                 var expectedPet = Mapper.Map<PetEntity, PetModel>(testPet);
                 var expected = new SingleResponse(Result.BadRequest, expectedMetadata, expectedPet);
                 var systemUnderTest = mock.Create<PetService>();
@@ -149,24 +147,23 @@ namespace PetRego.UnitTests.ServiceTests
                 Assert.IsNotNull(actual.Metadata);
                 Assert.IsNotNull(actual.Metadata.Links);
                 Assert.AreEqual(expected.Metadata.ServerVersion, actual.Metadata.ServerVersion);
-                Assert.AreEqual(expected.Metadata.Links.Count, actual.Metadata.Links.Count);
-                // todo - compare and assert the actual links
+                Assert.IsTrue(MetadataLinksAreEqual(expected.Metadata.Links, actual.Metadata.Links));
             }
         }
 
         [TestMethod]
         public void Can_Get_Pet_Handles_Server_Error()
         {
-        var config = new TestConfig(); // todo - pull from container
             using (var mock = AutoMock.GetLoose())
             {
                 // Arrange
+                var config = mock.Provide<IAppConfig, TestConfig>();
                 var testPet = GetTestPet();
                 var expectedMetadata = new Metadata(new[]
                 {
-                    Link.Self($"{config.TokenizedBaseUrl}", HttpMethod.Get.Method),
-                    Link.Edit($"{config.TokenizedBaseUrl}", HttpMethod.Put.Method),
-                    Link.Delete($"{config.TokenizedBaseUrl}", HttpMethod.Delete.Method),
+                    Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Get.Method),
+                    Link.Edit($"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testPet.Id}", HttpMethod.Put.Method),
+                    Link.Delete($"{Constants.TOKENIZED_BASE_URL}/{Constants.API_ROUTE_BASE_PATH}{Constants.TOKENIZED_CONTROLLER_PATH}/{testPet.Id}", HttpMethod.Delete.Method),
                 });
                 var expectedPet = Mapper.Map<PetEntity, PetModel>(testPet);
                 var expected = new SingleResponse(Result.InternalError, expectedMetadata, expectedPet);
@@ -187,25 +184,24 @@ namespace PetRego.UnitTests.ServiceTests
                 Assert.IsNotNull(actual.Metadata);
                 Assert.IsNotNull(actual.Metadata.Links);
                 Assert.AreEqual(expected.Metadata.ServerVersion, actual.Metadata.ServerVersion);
-                Assert.AreEqual(expected.Metadata.Links.Count, actual.Metadata.Links.Count);
-                // todo - compare and assert the actual links
+                Assert.IsTrue(MetadataLinksAreEqual(expected.Metadata.Links, actual.Metadata.Links));
             }
         }
 
         [TestMethod]
         public void Can_Create_Pet()
         {
-            var config = new TestConfig(); // todo - pull from container
             using (var mock = AutoMock.GetLoose())
             {
                 // Arrange
+                var config = mock.Provide<IAppConfig, TestConfig>();
                 var testPet = GetTestPet();
                 var expectedMetadata = new Metadata(new[]
                 {
-                    Link.Self($"{config.TokenizedBaseUrl}", HttpMethod.Post.Method),
-                    Link.Custom("detail", $"{config.TokenizedBaseUrl}/{testPet.Id}/detail", HttpMethod.Get.Method),
-                    Link.Edit($"{config.TokenizedBaseUrl}/{testPet.Id}", HttpMethod.Put.Method),
-                    Link.Delete($"{config.TokenizedBaseUrl}/{testPet.Id}", HttpMethod.Delete.Method),
+                    Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Post.Method),
+                    Link.Custom("detail", $"{Constants.TOKENIZED_CURRENT_URL}/{testPet.Id}/detail", HttpMethod.Get.Method),
+                    Link.Edit($"{Constants.TOKENIZED_CURRENT_URL}/{testPet.Id}", HttpMethod.Put.Method),
+                    Link.Delete($"{Constants.TOKENIZED_CURRENT_URL}/{testPet.Id}", HttpMethod.Delete.Method),
                 });
                 var expectedPet = Mapper.Map<PetEntity, PetModel>(testPet);
                 var expected = new Response(Result.Created, expectedMetadata);
@@ -224,25 +220,23 @@ namespace PetRego.UnitTests.ServiceTests
                 Assert.IsNotNull(actual.Metadata);
                 Assert.IsNotNull(actual.Metadata.Links);
                 Assert.AreEqual(expected.Metadata.ServerVersion, actual.Metadata.ServerVersion);
-                Assert.AreEqual(expected.Metadata.Links.Count, actual.Metadata.Links.Count);
-                // todo - compare and assert the actual links
-
+                Assert.IsTrue(MetadataLinksAreEqual(expected.Metadata.Links, actual.Metadata.Links));
             }
         }
 
         [TestMethod]
         public void Can_Update_Pet()
         {
-            var config = new TestConfig(); // todo - pull from container
             using (var mock = AutoMock.GetLoose())
             {
                 // Arrange
+                var config = mock.Provide<IAppConfig, TestConfig>();
                 var testPet = GetTestPet();
                 var expectedMetadata = new Metadata(new[]
                 {
-                    Link.Self($"{config.TokenizedBaseUrl}", HttpMethod.Put.Method),
-                    Link.Custom("detail", $"{config.TokenizedBaseUrl}/{testPet.Id}/detail", HttpMethod.Get.Method),
-                    Link.Delete($"{config.TokenizedBaseUrl}/{testPet.Id}", HttpMethod.Delete.Method),
+                    Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Put.Method),
+                    Link.Custom("detail", $"{Constants.TOKENIZED_CURRENT_URL}/{testPet.Id}/detail", HttpMethod.Get.Method),
+                    Link.Delete($"{Constants.TOKENIZED_CURRENT_URL}/{testPet.Id}", HttpMethod.Delete.Method),
                 });
                 var expectedPet = Mapper.Map<PetEntity, PetModel>(testPet);
                 var expected = new Response(Result.Updated, expectedMetadata);
@@ -261,8 +255,7 @@ namespace PetRego.UnitTests.ServiceTests
                 Assert.IsNotNull(actual.Metadata);
                 Assert.IsNotNull(actual.Metadata.Links);
                 Assert.AreEqual(expected.Metadata.ServerVersion, actual.Metadata.ServerVersion);
-                Assert.AreEqual(expected.Metadata.Links.Count, actual.Metadata.Links.Count);
-                // todo - compare and assert the actual links
+                Assert.IsTrue(MetadataLinksAreEqual(expected.Metadata.Links, actual.Metadata.Links));
             }
         }
 
@@ -270,14 +263,14 @@ namespace PetRego.UnitTests.ServiceTests
         [TestMethod]
         public void Can_DeletePet()
         {
-            var config = new TestConfig(); // todo - pull from container
             using (var mock = AutoMock.GetLoose())
             {
                 // Arrange
+                var config = mock.Provide<IAppConfig, TestConfig>();
                 var testPet = GetTestPet();
                 var expectedMetadata = new Metadata(new[]
                 {
-                    Link.Self($"{config.TokenizedBaseUrl}", HttpMethod.Delete.Method),
+                    Link.Self($"{Constants.TOKENIZED_CURRENT_URL}", HttpMethod.Delete.Method),
                 });
                 var expected = new Response(Result.Deleted, expectedMetadata);
                 mock.Mock<IRepository<PetEntity>>().Setup(x => x.Delete(testPet.Id)).ReturnsAsync(true);
@@ -295,25 +288,12 @@ namespace PetRego.UnitTests.ServiceTests
                 Assert.IsNotNull(actual.Metadata);
                 Assert.IsNotNull(actual.Metadata.Links);
                 Assert.AreEqual(expected.Metadata.ServerVersion, actual.Metadata.ServerVersion);
-                Assert.AreEqual(expected.Metadata.Links.Count, actual.Metadata.Links.Count);
-                // todo - compare and assert the actual links
-
+                Assert.IsTrue(MetadataLinksAreEqual(expected.Metadata.Links, actual.Metadata.Links));
             }
         }
 
 
 
-        PetEntity GetTestPet()
-        {
-            return new PetEntity
-            {
-                OwnerId = Guid.NewGuid().ToString(),
-                Type = PetType.Cat,
-                Name = "Mina",
-                Breed = "Ginger",
-                Description = "Petite, short hair, very sweet"
-            };
-        }
 
 
     }

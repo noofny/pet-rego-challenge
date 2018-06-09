@@ -15,7 +15,7 @@ namespace PetRego.AppHost
         }
 
         [HttpGet]
-        [Route(Service.API_ROUTE_BASE_PATH)]
+        [Route(Constants.API_ROUTE_BASE_PATH)]
         public IResponse Get()
         {
             var response = DiscoveryService.Discover();

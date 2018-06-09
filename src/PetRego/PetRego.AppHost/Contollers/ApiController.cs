@@ -7,13 +7,13 @@ using System.Linq;
 namespace PetRego.AppHost
 {
     /// <summary>
-    /// todo - find a nice wayto mock the HttpContext (on ControllerContext) so these controllers can be unit tested.
+    /// todo - provide a constructor that takes a HttpContext/ControllerContext so these controllers can be unit tested.
     /// </summary>
-    public class ApiController : Controller
+    public abstract class ApiController : Controller
     {
         protected readonly IAppConfig AppConfig;
 
-        public ApiController(IAppConfig appConfig)
+        protected ApiController(IAppConfig appConfig)
         {
             AppConfig = appConfig;
         }
@@ -51,10 +51,10 @@ namespace PetRego.AppHost
 
             foreach(var link in response.Metadata.Links)
             {
-                link.Href = link.Href.Replace(AppConfig.TokenizedCurrentUrl, currentUrl);
-                link.Href = link.Href.Replace(AppConfig.TokenizedBaseUrl, baseUrl);
-                link.Href = link.Href.Replace(AppConfig.TokenizedControllerPath, controllerPath);
-                link.Href = link.Href.Replace(AppConfig.TokenizedActionPath, actionPath);
+                link.Href = link.Href.Replace(Constants.TOKENIZED_CURRENT_URL, currentUrl);
+                link.Href = link.Href.Replace(Constants.TOKENIZED_BASE_URL, baseUrl);
+                link.Href = link.Href.Replace(Constants.TOKENIZED_CONTROLLER_PATH, controllerPath);
+                link.Href = link.Href.Replace(Constants.TOKENIZED_ACTION_PATH, actionPath);
             }
         }
 

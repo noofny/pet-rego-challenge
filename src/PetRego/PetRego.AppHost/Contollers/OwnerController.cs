@@ -17,7 +17,7 @@ namespace PetRego.AppHost
 
 
         [HttpGet]
-        [Route(Service.API_ROUTE_BASE_PATH + Service.API_ROUTE_CONTROLLER_PATH + "search/{field}/{value}")]
+        [Route(Constants.API_ROUTE_BASE_PATH + Constants.API_ROUTE_CONTROLLER_PATH + "search/{field}/{value}")]
         public async Task<IResponse> Search(string field, string value)
         {
             var response = await OwnerService.Search(field, value);
@@ -27,7 +27,7 @@ namespace PetRego.AppHost
         }
 
         [HttpGet]
-        [Route(Service.API_ROUTE_BASE_PATH + Service.API_ROUTE_CONTROLLER_PATH + "{id}/summary")]
+        [Route(Constants.API_ROUTE_BASE_PATH + Constants.API_ROUTE_CONTROLLER_PATH + "{id}/summary")]
         public async Task<IResponse> Summary(string id)
         {
             var response = await OwnerService.Summary(id);
@@ -37,7 +37,7 @@ namespace PetRego.AppHost
         }
 
         [HttpGet]
-        [Route(Service.API_ROUTE_BASE_PATH + Service.API_ROUTE_CONTROLLER_PATH + "{id}/detail")]
+        [Route(Constants.API_ROUTE_BASE_PATH + Constants.API_ROUTE_CONTROLLER_PATH + "{id}/detail")]
         public async Task<IResponse> Detail(string id)
         {
             var response = await OwnerService.Detail(id);
@@ -47,7 +47,7 @@ namespace PetRego.AppHost
         }
 
         [HttpPost]
-        [Route(Service.API_ROUTE_BASE_PATH + Service.API_ROUTE_CONTROLLER_PATH)]
+        [Route(Constants.API_ROUTE_BASE_PATH + Constants.API_ROUTE_CONTROLLER_PATH)]
         public async Task<IResponse> Create([FromBody]OwnerDetailModel owner)
         {
             var response = await OwnerService.Create(owner);
@@ -57,7 +57,7 @@ namespace PetRego.AppHost
         }
 
         [HttpPut]
-        [Route(Service.API_ROUTE_BASE_PATH + Service.API_ROUTE_CONTROLLER_PATH + "{id}")]
+        [Route(Constants.API_ROUTE_BASE_PATH + Constants.API_ROUTE_CONTROLLER_PATH + "{id}")]
         public async Task<IResponse> Edit(string id, [FromBody]OwnerDetailModel owner)
         {
             owner.Id = id;
@@ -68,7 +68,7 @@ namespace PetRego.AppHost
         }
 
         [HttpDelete]
-        [Route(Service.API_ROUTE_BASE_PATH + Service.API_ROUTE_CONTROLLER_PATH + "{id}")]
+        [Route(Constants.API_ROUTE_BASE_PATH + Constants.API_ROUTE_CONTROLLER_PATH + "{id}")]
         public async Task<IResponse> Delete(string id)
         {
             var response = await OwnerService.Delete(id);
