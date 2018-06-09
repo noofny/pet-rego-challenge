@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +9,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using PetRego.Data;
 using PetRego.Common;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace PetRego.Api
 {
@@ -30,14 +32,28 @@ namespace PetRego.Api
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
             applicationBuilder.UseMvc();
+            applicationBuilder.UseSwagger();
+            applicationBuilder.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "PetRego REST API");
+            });
             applicationLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
         }
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info
+                {
+                    Version = Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                    Title = "PetRego REST API",
+                    Description = "Unofficial REST API for the fictional PetRego business @ https://github.com/noofny/pet-rego-challenge",
+                });
+            });
 
             var builder = new ContainerBuilder();
             builder.Populate(services);
