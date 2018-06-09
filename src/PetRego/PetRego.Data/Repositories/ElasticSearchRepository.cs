@@ -39,17 +39,20 @@ namespace PetRego.Data
     {
         readonly IElasticClient _client;
         readonly string _defaultIndex;
+        readonly string _defaultTypeName;
         const long WriteConflictRetries = 2;
 
         public ElasticSearchRepository(ElasticClientFactory<T> clientFactory, IAppConfig appConfig)
         {
             _client = clientFactory.GetClient(appConfig.ElasticSearchUri);
             _defaultIndex = _client.ConnectionSettings != null ? _client.ConnectionSettings.DefaultIndex : string.Empty;
+            _defaultTypeName = _client.ConnectionSettings != null ? _client.ConnectionSettings.DefaultTypeName : string.Empty;
         }
         public ElasticSearchRepository(IElasticClient client)
         {
             _client = client;
             _defaultIndex = _client.ConnectionSettings != null ? _client.ConnectionSettings.DefaultIndex : string.Empty;
+            _defaultTypeName = _client.ConnectionSettings != null ? _client.ConnectionSettings.DefaultTypeName : string.Empty;
         }
 
 
@@ -61,9 +64,12 @@ namespace PetRego.Data
             {
                 throw new ArgumentNullException(nameof(id));
             }
-            var response = await _client.SearchAsync<T>(s => s
-                .Query(q => q.Match(m => m.Field(f => f.Id).Query(id)))
-            );
+            var existsResponse = await _client.DocumentExistsAsync<T>(id, d => d.Index(_defaultIndex).Type(_defaultTypeName));
+            if (!existsResponse.Exists)
+            {
+                return default(T);
+            }
+            var response = await _client.GetAsync<T>(id, s => s.Index(_defaultIndex).Type(_defaultTypeName));
             if (!response.IsValid)
             {
                 throw new DataException<T>(
@@ -73,7 +79,7 @@ namespace PetRego.Data
                     response.OriginalException
                 );
             }
-            return response.Documents.SingleOrDefault();
+            return response.Source;
         }
 
         // todo - add pagination
@@ -97,7 +103,7 @@ namespace PetRego.Data
             var searchResponse = _client.Search<T>(s => s
                 .Index(_client.ConnectionSettings.DefaultIndex)
                 .Type(_client.ConnectionSettings.DefaultTypeName)
-                .Query(q => q.QueryString(qs => qs.DefaultField(field).Query(value))));
+                .Query(q => q.QueryString(d => d.Query($"{field}={value}"))));
             if (!searchResponse.IsValid)
             {
                 throw new DataException<T>(
@@ -109,6 +115,7 @@ namespace PetRego.Data
             }
             return searchResponse.Documents.ToList();
         }
+
         public async Task<bool> Add(T entity)
         {
             entity.Created = DateTime.UtcNow;
@@ -127,6 +134,11 @@ namespace PetRego.Data
 
         public async Task<bool> Update(T entity)
         {
+            var existsResponse = await _client.DocumentExistsAsync<T>(entity.Id, d => d.Index(_defaultIndex).Type(_defaultTypeName));
+            if (!existsResponse.Exists)
+            {
+                return false;
+            }
             entity.Updated = DateTime.UtcNow;
             var response = await _client.UpdateAsync<T, object>(entity.Id, u => u
                 .Doc(entity)
@@ -147,6 +159,11 @@ namespace PetRego.Data
 
         public async Task<bool> Delete(string id)
         {
+            var existsResponse = await _client.DocumentExistsAsync<T>(id, d => d.Index(_defaultIndex).Type(_defaultTypeName));
+            if (!existsResponse.Exists)
+            {
+                return false;
+            }
             var indexResponse = await _client.IndexExistsAsync(_defaultIndex);
             if (!indexResponse.IsValid)
             {
@@ -174,38 +191,6 @@ namespace PetRego.Data
             }
             return true;
         }
-
-        public async Task<bool> DeleteAll()
-        {
-            var indexResponse = await _client.IndexExistsAsync(_defaultIndex);
-            if (!indexResponse.IsValid)
-            {
-                throw new DataException<T>(
-                    "DeleteAll(index check)",
-                    Mapper.Map<Models.Result>(Result.Error),
-                    $"{indexResponse.OriginalException.Message}{Environment.NewLine}{indexResponse.ServerError}{Environment.NewLine}{indexResponse.DebugInformation}",
-                    indexResponse.OriginalException
-                );
-            }
-            if (!indexResponse.Exists)
-            {
-                // index doesn't exist - nothing to do
-                return false;
-            }
-            var deleteResponse = await _client.DeleteIndexAsync(_defaultIndex);
-            if (!deleteResponse.IsValid)
-            {
-                throw new DataException<T>(
-                    "DeleteAll",
-                    Mapper.Map<Models.Result>(Result.Error),
-                    $"{deleteResponse.OriginalException.Message}{Environment.NewLine}{deleteResponse.ServerError}{Environment.NewLine}{deleteResponse.DebugInformation}",
-                    deleteResponse.OriginalException
-                );
-            }
-            return true;
-        }
-
-
 
     }
 }
