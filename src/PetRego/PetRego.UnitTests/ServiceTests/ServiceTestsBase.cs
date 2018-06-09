@@ -3,11 +3,20 @@ using PetRego.Models;
 using System.Linq;
 using System;
 using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace PetRego.UnitTests.ServiceTests
 {
     public abstract class ServiceTestsBase
     {
+        [TestInitialize]
+        public void Setup()
+        {
+            AppHost.AutomapperConfig.Configure();
+        }
+
+
+
         protected OwnerEntity GetTestOwner()
         {
             return new OwnerEntity

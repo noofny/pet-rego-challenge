@@ -32,14 +32,6 @@ namespace PetRego.UnitTests.ServiceTests
     public class OwnerServiceTests : ServiceTestsBase
     {
 
-        [TestInitialize]
-        public void Setup()
-        {
-            AutomapperConfig.Configure();
-        }
-
-
-
         [TestMethod]
         public void Can_Search_Owners()
         {
