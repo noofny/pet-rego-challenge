@@ -32,6 +32,10 @@ namespace PetRego.AppHost
                     response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     break;
 
+                case Result.Created:
+                    response.StatusCode = (int)HttpStatusCode.Created;
+                    break;
+
                 default:
                     // For POST/PUT/DELETE methods, it is common to respond with 204(NoContent).
                     // Because I am returning a response with at least metadata/hypermedia however, 

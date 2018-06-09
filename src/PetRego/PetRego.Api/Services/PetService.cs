@@ -124,7 +124,7 @@ namespace PetRego.Api
             {
                 var petEntity = Mapper.Map<PetEntity>(pet);
                 var added = await PetRepository.Add(petEntity);
-                return new Response(added ? Result.Created : Result.Noop, metadata);
+                return new Response(Result.Created, metadata);
             }
             catch (DataException<PetEntity> ex)
             {
@@ -154,7 +154,7 @@ namespace PetRego.Api
             {
                 var petEntity = Mapper.Map<PetEntity>(pet);
                 var updated = await PetRepository.Update(petEntity);
-                return new Response(updated ? Result.Updated : Result.Noop, metadata);
+                return new Response(Result.Updated, metadata);
             }
             catch (DataException<PetEntity> ex)
             {
@@ -181,7 +181,7 @@ namespace PetRego.Api
             try
             {
                 var deleted = await PetRepository.Delete(id);
-                return new Response(deleted ? Result.Deleted : Result.Noop, metadata);
+                return new Response(Result.Deleted, metadata);
             }
             catch (DataException<PetEntity> ex)
             {

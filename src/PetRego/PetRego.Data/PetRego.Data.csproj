@@ -9,6 +9,7 @@
     <PackageReference Include="NEST" Version="6.1.0" />
     <PackageReference Include="NEST.JsonNetSerializer" Version="6.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="AutoMapper" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Repositories\" />

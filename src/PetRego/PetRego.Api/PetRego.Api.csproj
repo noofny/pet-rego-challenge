@@ -10,7 +10,7 @@
     <ProjectReference Include="..\PetRego.Common\PetRego.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="6.2.2" />
+    <PackageReference Include="AutoMapper" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services\" />

@@ -58,7 +58,8 @@ namespace PetRego.Api
             ApplicationContainer = builder.Build();
 
 
-            AutomapperConfig.Configure();
+            AppHost.AutomapperConfig.Configure();
+
             return new AutofacServiceProvider(ApplicationContainer);
         }
 

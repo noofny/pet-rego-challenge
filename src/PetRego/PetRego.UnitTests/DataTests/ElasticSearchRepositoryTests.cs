@@ -20,7 +20,7 @@ namespace PetRego.UnitTests.DataTests
         [TestInitialize]
         public void Setup()
         {
-            AutomapperConfig.Configure();
+            AppHost.AutomapperConfig.Configure();
             TestContainer.Configure();
         }
 

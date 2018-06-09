@@ -1,12 +1,7 @@
 ﻿using System;
-using Moq;
-using Autofac;
-using Autofac.Extras.Moq;
-using PetRego.Api;
+using PetRego.AppHost;
 using PetRego.Data;
 using PetRego.Models;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AutoMapper;
 
@@ -21,12 +16,6 @@ namespace PetRego.UnitTests.MappingTests
             AutomapperConfig.Configure();
         }
 
-
-        [TestMethod]
-        public void Mapping_Config_Is_Valid()
-        {
-            Mapper.Configuration.AssertConfigurationIsValid();
-        }
 
 
         [TestMethod]

@@ -6,6 +6,7 @@ using Nest;
 using Nest.JsonNetSerializer;
 using Elasticsearch.Net;
 using PetRego.Common;
+using AutoMapper;
 
 namespace PetRego.Data
 {
@@ -67,7 +68,7 @@ namespace PetRego.Data
             {
                 throw new DataException<T>(
                     "Get",
-                    MapNestResult(Result.Error),
+                    Mapper.Map<Models.Result>(Result.Error),
                     $"{response.OriginalException.Message}{Environment.NewLine}{response.ServerError}{Environment.NewLine}{response.DebugInformation}",
                     response.OriginalException
                 );
@@ -83,7 +84,7 @@ namespace PetRego.Data
             {
                 throw new DataException<T>(
                     "List(index check)",
-                    MapNestResult(Result.Error),
+                    Mapper.Map<Models.Result>(Result.Error),
                     $"{indexResponse.OriginalException.Message}{Environment.NewLine}{indexResponse.ServerError}{Environment.NewLine}{indexResponse.DebugInformation}",
                     indexResponse.OriginalException
                 );
@@ -101,7 +102,7 @@ namespace PetRego.Data
             {
                 throw new DataException<T>(
                     "Search",
-                    MapNestResult(Result.Error),
+                    Mapper.Map<Models.Result>(Result.Error),
                     $"{searchResponse.OriginalException.Message}{Environment.NewLine}{searchResponse.ServerError}{Environment.NewLine}{searchResponse.DebugInformation}",
                     searchResponse.OriginalException
                 );
@@ -116,7 +117,7 @@ namespace PetRego.Data
             {
                 throw new DataException<T>(
                     "Add",
-                    MapNestResult(response.Result),
+                    Mapper.Map<Models.Result>(response.Result),
                     $"{response.OriginalException.Message}{Environment.NewLine}{response.ServerError}{Environment.NewLine}{response.DebugInformation}",
                     response.OriginalException
                 );
@@ -136,7 +137,7 @@ namespace PetRego.Data
             {
                 throw new DataException<T>(
                     "Update",
-                    MapNestResult(response.Result),
+                    Mapper.Map<Models.Result>(response.Result),
                     $"{response.OriginalException.Message}{Environment.NewLine}{response.ServerError}{Environment.NewLine}{response.DebugInformation}",
                     response.OriginalException
                 );
@@ -151,7 +152,7 @@ namespace PetRego.Data
             {
                 throw new DataException<T>(
                     "Delete(inded check)",
-                    MapNestResult(Result.Error),
+                    Mapper.Map<Models.Result>(Result.Error),
                     $"{indexResponse.OriginalException.Message}{Environment.NewLine}{indexResponse.ServerError}{Environment.NewLine}{indexResponse.DebugInformation}",
                     indexResponse.OriginalException
                 );
@@ -166,7 +167,7 @@ namespace PetRego.Data
             {
                 throw new DataException<T>(
                     "Delete",
-                    MapNestResult(deleteResponse.Result),
+                    Mapper.Map<Models.Result>(deleteResponse.Result),
                     $"{deleteResponse.OriginalException.Message}{Environment.NewLine}{deleteResponse.ServerError}{Environment.NewLine}{deleteResponse.DebugInformation}",
                     deleteResponse.OriginalException
                 );
@@ -181,7 +182,7 @@ namespace PetRego.Data
             {
                 throw new DataException<T>(
                     "DeleteAll(index check)",
-                    MapNestResult(Result.Error),
+                    Mapper.Map<Models.Result>(Result.Error),
                     $"{indexResponse.OriginalException.Message}{Environment.NewLine}{indexResponse.ServerError}{Environment.NewLine}{indexResponse.DebugInformation}",
                     indexResponse.OriginalException
                 );
@@ -196,7 +197,7 @@ namespace PetRego.Data
             {
                 throw new DataException<T>(
                     "DeleteAll",
-                    MapNestResult(Result.Error),
+                    Mapper.Map<Models.Result>(Result.Error),
                     $"{deleteResponse.OriginalException.Message}{Environment.NewLine}{deleteResponse.ServerError}{Environment.NewLine}{deleteResponse.DebugInformation}",
                     deleteResponse.OriginalException
                 );
@@ -204,42 +205,6 @@ namespace PetRego.Data
             return true;
         }
 
-
-
-       
-        /// <summary>
-        /// Todo - might be better to leverage Automapper here?
-        /// This is okay for now as it provides an explicit result and is transparent
-        /// in the case if NEST adds new values which I haven't supported.
-        /// </summary>
-        /// <returns>The value from the NEST library.</returns>
-        /// <param name="result">The relative mapped value to this API.</param>
-        Models.Result MapNestResult(Result result)
-        {
-            switch (result)
-            {
-                case Result.Created:
-                    return Models.Result.Created;
-
-                case Result.Deleted:
-                    return Models.Result.Deleted;
-
-                case Result.Error:
-                    return Models.Result.InternalError;
-
-                case Result.Noop:
-                    return Models.Result.Noop;
-
-                case Result.NotFound:
-                    return Models.Result.NotFound;
-
-                case Result.Updated:
-                    return Models.Result.Updated;
-
-                default:
-                    return Models.Result.Unsupported;
-            }
-        }
 
 
     }

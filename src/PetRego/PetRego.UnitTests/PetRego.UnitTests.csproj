@@ -23,6 +23,7 @@
     <ProjectReference Include="..\PetRego.Models\PetRego.Models.csproj" />
     <ProjectReference Include="..\PetRego.Common\PetRego.Common.csproj" />
     <ProjectReference Include="..\PetRego.Api\PetRego.Api.csproj" />
+    <ProjectReference Include="..\PetRego.AppHost\PetRego.AppHost.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataTests\" />

@@ -4,7 +4,6 @@
     {
         Unsupported,
         Success,
-        Noop,
         NotFound,
         Created,
         Updated,
