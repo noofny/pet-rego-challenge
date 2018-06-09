@@ -28,17 +28,17 @@ namespace PetRego.Api
 
         public void Configure(IApplicationBuilder applicationBuilder, ILoggerFactory loggerFactory, IApplicationLifetime applicationLifetime)
         {
-            loggerFactory.AddConsole(this.Configuration.GetSection("Logging"));
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
             applicationBuilder.UseMvc();
-            applicationLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
+            applicationLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
         }
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
 
-            // all container register fun starts...
+
             var builder = new ContainerBuilder();
             builder.Populate(services);
 
@@ -56,7 +56,6 @@ namespace PetRego.Api
             builder.RegisterType<PetService>();
 
             ApplicationContainer = builder.Build();
-
 
 
             AutomapperConfig.Configure();
