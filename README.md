@@ -266,7 +266,7 @@ I started to build a basic dashboard in Kibana in order to visualize the data.
 
 I have included the import file in this repo under /config/kibana which you can import into your instance if you wish to play around with it. It's pretty neat once you have a lot of data.
 
-<img height="800px" src="./pics/kibana.png">
+<img src="./pics/kibana.png">
 
 # Hosting
 
@@ -284,13 +284,12 @@ The solution does not implement any authentication as per the brief. The simples
 
 ## Testing
 
-Unit testing (mocking) of the actual API controllers has not been done due to time constraints. Whilst the controllers are lightweight and contain very little actual logic, they are where I enrich the responses with hypermedia, so this being a core feature of a REST API means it must have test coverage. With more time, I would like to add more varied test setups and test more negative scenarios, particularly around testing the services.
-
-**I honestly admit that the general test coverage in this project as it stands is very low and well below an acceptable 'production-ready' standard.**
-
-With more time, I would like to add integration testing code which would add testing data. I would probably write these tests using Javascript, so they can easily be used in Postman tests or run standalone in Node / Mocha.
-
-I would also like to demonstrate an implementation of contract-based testing [using PACT](https://docs.pact.io/), primarily as a learning exercise but also as a reference point for possible future talks/projects or mentoring colleagues.
+I feel there is very little test coverage currently, with more time I would like to improve this as follows;
+- Get the repository tests working (mocking the NEST/ElasticSearch classes proved more challenging than I expected).
+- Add unit tests for the API controllers, mocking the HttpContext so I can test the transformed metadata responses.
+- Add integration tests which would seed data before and tear it down after testing. Would probably do this in Javascript and host in Node/Mocha.
+- Include some scripts to seed dummy data used to play around with the solution. I would do is in Javascript so the code could be used in Postman tests or standalone via a Node task or similar.
+- I would also like to demonstrate an implementation of contract-based testing [using PACT](https://docs.pact.io/), primarily as a learning exercise but also as a reference point for possible future talks/projects or mentoring colleagues.
 
 ## Logging
 
@@ -298,13 +297,13 @@ Currently the API logs nothing. As I focused on items for the brief, with limite
 
 ## API / Hypermedia
 
-I decided to write my own code for the hypermedia responses. Whilst this achieves the desired goal, I feel that the code is far from elegant and adds code smell to the services. A more elegant solution would have 
+I decided to write my own code for the hypermedia responses. Whilst this achieves the desired goal, I feel that the code is far from elegant and adds code smell to the services.  
 
 Given more time I would implement templates (or 'recipes') in the responses where complex requests are expected (such as creates / updates). These would instruct a client the exact request schema required for these actions. I feel that the lack of these templates on these endpoints technically leaves these being un-RESTful (if that's a word) because a client cannot discover how to use these endpoints.
 
 ## Packaging
 
-Given time I would like to containerize the solution by creating a Docker file which self hosts the application on top of a lightweight Linux image, making it easy to host anywhere.
+Given time I would like to containerize the solution by creating a Docker file which self hosts the application on top of a lightweight Linux/Windows image, making it easy to host anywhere.
 
 # References & Inspiration
 
