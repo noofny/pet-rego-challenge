@@ -14,7 +14,7 @@ namespace PetRego.Api
             AppConfig = appConfig;
         }
 
-        public IResponse Discover()
+        public Response Discover()
         {
             var metadata = new Metadata(new []
             {
@@ -30,7 +30,9 @@ namespace PetRego.Api
                 Link.Custom("pets-by-name", $"{Constants.TOKENIZED_CURRENT_URL}/pet/search/name/{{value}}", HttpMethod.Get.Method),
                 Link.Custom("pets-by-type", $"{Constants.TOKENIZED_CURRENT_URL}/pet/search/type/{{value}}", HttpMethod.Get.Method),
                 Link.Custom("pets-by-breed", $"{Constants.TOKENIZED_CURRENT_URL}/pet/search/breed/{{value}}", HttpMethod.Get.Method),
-          
+
+                Link.Custom("food-summary", $"{Constants.TOKENIZED_CURRENT_URL}/food/summary", HttpMethod.Get.Method),
+
             });
 
             var response = new Response(Result.Success, metadata);

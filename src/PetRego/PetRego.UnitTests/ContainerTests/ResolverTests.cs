@@ -82,5 +82,13 @@ namespace PetRego.UnitTests.ContainerTests
             Assert.IsNotNull(component);
         }
 
+        [TestMethod]
+        public void Can_Resolve_FoodService()
+        {
+            var component = TestContainer.Container.Resolve<FoodService>();
+
+            Assert.IsNotNull(component);
+        }
+
     }
 }

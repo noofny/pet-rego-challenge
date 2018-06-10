@@ -196,49 +196,21 @@ namespace PetRego.Data
             return true;
         }
 
-
-        /// <summary>
-        /// This has to be some of the worst code I have written and I'm not happy at all about it.
-        ///   - This is a horrible way to aggregate data, period.
-        ///   - The NEST SDK retricts results to 10 items, int.Max gets rejected, so this is utterly broken.
-        ///   - NEST provides calls for aggregates, but I just couldn't get it working in time.
-        ///   - The dynamic LINQ library I used is old, poorly documents and really just a convenience.
-        ///   - Performance is just terrible here.
-        ///   
-        /// todo  - FIX IT! 
-        /// 
-        /// </summary>
-        /// <returns>Gets aggregation metrics based on the given grouping field.</returns>
-        /// <param name="groupBy">The field to group by.</param>
-        /// <typeparam name="K">The resulting aggregation results, if you're lucky.</typeparam>
-        public async Task<List<Aggregate>> Count<K>(string groupBy)
+        public async Task<EntityCount> Count()
         {
             try
             {
-                var response = await _client.SearchAsync<T>(s => s
-                    .Index(_defaultIndex)
-                    .Type(_defaultTypeName)
-                );
-                if (!response.IsValid)
+                var countResponse = await _client.CountAsync<T>(s => s.Index(_defaultIndex).Type(_defaultTypeName));
+                if (!countResponse.IsValid)
                 {
                     throw new DataException<T>(
-                        "Count",
+                        "Count (all)",
                         Mapper.Map<Models.Result>(Nest.Result.Error),
-                        $"{response.OriginalException.Message}{Environment.NewLine}{response.ServerError}{Environment.NewLine}{response.DebugInformation}",
-                        response.OriginalException
+                        $"{countResponse.OriginalException.Message}{Environment.NewLine}{countResponse.ServerError}{Environment.NewLine}{countResponse.DebugInformation}",
+                        countResponse.OriginalException
                     );
                 }
-
-                var result = new List<Aggregate>();
-                var items = response.Documents.AsQueryable();
-                var grouped = items.GroupBy(groupBy, "it").Cast<IGrouping<K, T>>();
-                foreach (var group in grouped)
-                {
-                    var key = group.Key.ToString();
-                    var count = group.Count();
-                    result.Add(new Aggregate(groupBy, key, count));
-                }
-                return result;
+                return new EntityCount(countResponse.Count);
             }
             catch (Exception ex)
             {
@@ -246,6 +218,42 @@ namespace PetRego.Data
                 return null;
             }
         }
+
+        public async Task<EntityCount> Count<F>(string groupBy)
+        {
+            try
+            {
+                /// This ended up being a hack for now, not happy with it for these reasons...
+                ///   - Calling Search over entire collection is unncessary/slow/expensive, only interested in the given groupBy field.
+                ///   - The Search method has a limit of max items it returns - so this will be broken for big datasets.
+                ///   - Using the Dynamic LINQ to group the collection on the given field is terribly slow.
+                ///   
+                /// todo - spend more time to exchange this for the NEST aggregate methods. 
+                var aggregateResponse = await _client.SearchAsync<T>(s => s
+                    .Index(_defaultIndex)
+                    .Type(_defaultTypeName)
+                );
+                if (!aggregateResponse.IsValid)
+                {
+                    throw new DataException<T>(
+                        "Count (aggregate)",
+                        Mapper.Map<Models.Result>(Nest.Result.Error),
+                        $"{aggregateResponse.OriginalException.Message}{Environment.NewLine}{aggregateResponse.ServerError}{Environment.NewLine}{aggregateResponse.DebugInformation}",
+                        aggregateResponse.OriginalException
+                    );
+                }
+                var queryable = aggregateResponse.Documents.AsQueryable();
+                var grouped = queryable.GroupBy(groupBy, "it").Cast<IGrouping<F, T>>();
+                var values = grouped.Select(x => new KeyValuePair<string, long>(x.Key.ToString(), x.Count())).ToDictionary(x => x.Key, x => x.Value);
+                return new EntityCount(groupBy, values);
+            }
+            catch (Exception ex)
+            {
+                var thing = ex.Message;
+                return null;
+            }
+        }
+
 
     }
 }

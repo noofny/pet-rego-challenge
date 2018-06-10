@@ -28,6 +28,7 @@ namespace PetRego.UnitTests
             builder.RegisterType<DiscoveryService>();
             builder.RegisterType<OwnerService>();
             builder.RegisterType<PetService>();
+            builder.RegisterType<FoodService>();
 
             Container = builder.Build();
 

@@ -2,9 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <ReleaseVersion>0.2</ReleaseVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="Config\" />
+    <Folder Include="Extensions\" />
   </ItemGroup>
 </Project>
