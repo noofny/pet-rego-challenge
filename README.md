@@ -302,10 +302,6 @@ Given more time I would implement templates (or 'recipes') in the responses wher
 
 Given time I would like to containerize the solution by creating a Docker file which self hosts the application on top of a lightweight Linux image, making it easy to host anywhere.
 
-# Remaining Work to Meet The Brief
-
-- Add endpoint to retrieve pets counts aggregated by pet type (for food ordering).
-
 # References & Inspiration
 
 - [GOTO 2014 • REST: I don't Think it Means What You Think it Does • Stefan Tilkov](https://www.youtube.com/watch?v=pspy1H6A3FM)

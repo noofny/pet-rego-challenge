@@ -53,14 +53,14 @@ namespace PetRego.UnitTests.ServiceTests
             {
                 return false;
             }
-            foreach(var expectedLink in expected)
+            foreach(var expectedItem in expected)
             {
-                var actualLink = actual.Single(x => 
-                    x.Action == expectedLink.Action &&
-                    x.Href == expectedLink.Href &&
-                    x.Rel == expectedLink.Rel
+                var actualItem = actual.SingleOrDefault(x => 
+                    x.Action == expectedItem.Action &&
+                    x.Href == expectedItem.Href &&
+                    x.Rel == expectedItem.Rel
                 );
-                if (actualLink == null)
+                if (actualItem == null)
                 {
                     return false;
                 }

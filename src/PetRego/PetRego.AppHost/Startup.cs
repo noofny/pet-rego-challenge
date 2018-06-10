@@ -70,6 +70,7 @@ namespace PetRego.Api
             builder.RegisterType<DiscoveryService>();
             builder.RegisterType<OwnerService>();
             builder.RegisterType<PetService>();
+            builder.RegisterType<FoodService>();
 
             ApplicationContainer = builder.Build();
 

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Collections.Generic;
+using PetRego.Models;
 
 namespace PetRego.Data
 {
@@ -10,6 +11,8 @@ namespace PetRego.Data
         Task<bool> Add(T entity);
         Task<bool> Update(T entity);
         Task<bool> Delete(string id);
+        Task<EntityCount> Count();
+        Task<EntityCount> Count<F>(string groupBy);
     }
 
 }

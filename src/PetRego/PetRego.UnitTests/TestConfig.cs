@@ -13,7 +13,7 @@ namespace PetRego.UnitTests
 
         public TestConfig()
         {
-            ElasticSearchUri = "http://lcoalhost/doesnt-matter";
+            ElasticSearchUri = "http://localhost:9200/";
         }
     }
 

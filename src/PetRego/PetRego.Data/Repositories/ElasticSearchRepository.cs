@@ -2,10 +2,14 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Linq.Dynamic;
+using System.Linq.Dynamic.Core;
 using Nest;
 using Nest.JsonNetSerializer;
 using Elasticsearch.Net;
 using PetRego.Common;
+using PetRego.Models;
 using AutoMapper;
 
 namespace PetRego.Data
@@ -74,7 +78,7 @@ namespace PetRego.Data
             {
                 throw new DataException<T>(
                     "Get",
-                    Mapper.Map<Models.Result>(Result.Error),
+                    Mapper.Map<Models.Result>(Nest.Result.Error),
                     $"{response.OriginalException.Message}{Environment.NewLine}{response.ServerError}{Environment.NewLine}{response.DebugInformation}",
                     response.OriginalException
                 );
@@ -90,7 +94,7 @@ namespace PetRego.Data
             {
                 throw new DataException<T>(
                     "List(index check)",
-                    Mapper.Map<Models.Result>(Result.Error),
+                    Mapper.Map<Models.Result>(Nest.Result.Error),
                     $"{indexResponse.OriginalException.Message}{Environment.NewLine}{indexResponse.ServerError}{Environment.NewLine}{indexResponse.DebugInformation}",
                     indexResponse.OriginalException
                 );
@@ -101,14 +105,14 @@ namespace PetRego.Data
                 return new List<T>();
             }
             var searchResponse = _client.Search<T>(s => s
-                .Index(_client.ConnectionSettings.DefaultIndex)
-                .Type(_client.ConnectionSettings.DefaultTypeName)
+                .Index(_defaultIndex)
+                .Type(_defaultTypeName)
                 .Query(q => q.QueryString(d => d.Query($"{field}={value}"))));
             if (!searchResponse.IsValid)
             {
                 throw new DataException<T>(
                     "Search",
-                    Mapper.Map<Models.Result>(Result.Error),
+                    Mapper.Map<Models.Result>(Nest.Result.Error),
                     $"{searchResponse.OriginalException.Message}{Environment.NewLine}{searchResponse.ServerError}{Environment.NewLine}{searchResponse.DebugInformation}",
                     searchResponse.OriginalException
                 );
@@ -120,7 +124,7 @@ namespace PetRego.Data
         {
             entity.Created = DateTime.UtcNow;
             var response = await _client.IndexDocumentAsync(entity);
-            if (response.Result != Result.Created || !response.IsValid)
+            if (response.Result != Nest.Result.Created || !response.IsValid)
             {
                 throw new DataException<T>(
                     "Add",
@@ -145,7 +149,7 @@ namespace PetRego.Data
                 .Upsert(entity)
                 .RetryOnConflict(WriteConflictRetries) // brute force optimistic concurrency
             );
-            if (response.Result != Result.Updated || !response.IsValid)
+            if (response.Result != Nest.Result.Updated || !response.IsValid)
             {
                 throw new DataException<T>(
                     "Update",
@@ -169,7 +173,7 @@ namespace PetRego.Data
             {
                 throw new DataException<T>(
                     "Delete(inded check)",
-                    Mapper.Map<Models.Result>(Result.Error),
+                    Mapper.Map<Models.Result>(Nest.Result.Error),
                     $"{indexResponse.OriginalException.Message}{Environment.NewLine}{indexResponse.ServerError}{Environment.NewLine}{indexResponse.DebugInformation}",
                     indexResponse.OriginalException
                 );
@@ -180,7 +184,7 @@ namespace PetRego.Data
                 return false;
             }
             var deleteResponse = await _client.DeleteAsync<T>(id);
-            if (!deleteResponse.IsValid && deleteResponse.Result != Result.NotFound)
+            if (!deleteResponse.IsValid && deleteResponse.Result != Nest.Result.NotFound)
             {
                 throw new DataException<T>(
                     "Delete",
@@ -191,6 +195,65 @@ namespace PetRego.Data
             }
             return true;
         }
+
+        public async Task<EntityCount> Count()
+        {
+            try
+            {
+                var countResponse = await _client.CountAsync<T>(s => s.Index(_defaultIndex).Type(_defaultTypeName));
+                if (!countResponse.IsValid)
+                {
+                    throw new DataException<T>(
+                        "Count (all)",
+                        Mapper.Map<Models.Result>(Nest.Result.Error),
+                        $"{countResponse.OriginalException.Message}{Environment.NewLine}{countResponse.ServerError}{Environment.NewLine}{countResponse.DebugInformation}",
+                        countResponse.OriginalException
+                    );
+                }
+                return new EntityCount(countResponse.Count);
+            }
+            catch (Exception ex)
+            {
+                var thing = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<EntityCount> Count<F>(string groupBy)
+        {
+            try
+            {
+                /// This ended up being a hack for now, not happy with it for these reasons...
+                ///   - Calling Search over entire collection is unncessary/slow/expensive, only interested in the given groupBy field.
+                ///   - The Search method has a limit of max items it returns - so this will be broken for big datasets.
+                ///   - Using the Dynamic LINQ to group the collection on the given field is terribly slow.
+                ///   
+                /// todo - spend more time to exchange this for the NEST aggregate methods. 
+                var aggregateResponse = await _client.SearchAsync<T>(s => s
+                    .Index(_defaultIndex)
+                    .Type(_defaultTypeName)
+                );
+                if (!aggregateResponse.IsValid)
+                {
+                    throw new DataException<T>(
+                        "Count (aggregate)",
+                        Mapper.Map<Models.Result>(Nest.Result.Error),
+                        $"{aggregateResponse.OriginalException.Message}{Environment.NewLine}{aggregateResponse.ServerError}{Environment.NewLine}{aggregateResponse.DebugInformation}",
+                        aggregateResponse.OriginalException
+                    );
+                }
+                var queryable = aggregateResponse.Documents.AsQueryable();
+                var grouped = queryable.GroupBy(groupBy, "it").Cast<IGrouping<F, T>>();
+                var values = grouped.Select(x => new KeyValuePair<string, long>(x.Key.ToString(), x.Count())).ToDictionary(x => x.Key, x => x.Value);
+                return new EntityCount(groupBy, values);
+            }
+            catch (Exception ex)
+            {
+                var thing = ex.Message;
+                return null;
+            }
+        }
+
 
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Collections.Generic;
 using AutoMapper;
 using PetRego.Common;
 using PetRego.Data;
@@ -94,6 +95,30 @@ namespace PetRego.AppHost
                             return HttpStatusCode.OK;
                     }
                 });
+
+                // pet type to food type
+                cfg.CreateMap<PetType, FoodType>().ConvertUsing(src =>
+                {
+                    switch (src)
+                    {
+                        case PetType.Cat:
+                            return FoodType.Fish;
+
+                        case PetType.Chicken:
+                            return FoodType.Corn;
+
+                        case PetType.Dog:
+                            return FoodType.Bones;
+
+                        case PetType.Snake:
+                            return FoodType.Mice;
+                        
+                        default:
+                            return FoodType.Undefined;
+                    }
+                });
+
+
 
                 _isConfigured = true;
             });
