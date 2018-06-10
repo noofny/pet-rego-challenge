@@ -31,5 +31,6 @@
     <Folder Include="MappingTests\" />
     <Folder Include="ContainerTests\" />
     <Folder Include="ServiceTests\" />
+    <Folder Include="ExtensionTests\" />
   </ItemGroup>
 </Project>

@@ -47,7 +47,7 @@ namespace PetRego.UnitTests.ServiceTests
                 });
                 var expectedCount = new EntityCount(groupedBy, new Dictionary<string, long>
                 {
-                    { FoodType.Fish.ToString(), 1 }
+                    { PetType.Cat.ToString(), 1 }
                 });
                 var expectedFoodSummaryModel = new FoodSummaryModel();
                 expectedFoodSummaryModel.FoodCounts.Add(new FoodCount(FoodType.Fish, 1));
