@@ -260,6 +260,14 @@ http://localhost:5000/swagger
 
 <img src="./pics/swagger.png">
 
+# Kibana
+
+I started to build a basic dashboard in Kibana in order to visualize the data. 
+
+I have included the import file in this repo under /config/kibana which you can import into your instance if you wish to play around with it. It's pretty neat once you have a lot of data.
+
+<img height="800px" src="./pics/kibana.png">
+
 # Hosting
 
 todo - get the solution hosted on my AWS account.
@@ -287,10 +295,6 @@ I would also like to demonstrate an implementation of contract-based testing [us
 ## Logging
 
 Currently the API logs nothing. As I focused on items for the brief, with limited time I decided to omit this, at great pains. Given more time I would implement a simple NLog interface in the services at least, to provide basic transparency on what the apps is doing. Longer term I would extend this to log to a data store, possible another ELK instance.
-
-## Dashboards
-
-Given more time, I would like to build a basic dashboard in Kibana showing breakdown of customer order volumes, pet type breakdown and other interesting metrics.
 
 ## API / Hypermedia
 
