@@ -308,6 +308,27 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "/food/summary",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{base-uri}}:{{port}}/{{api-path}}/food/summary",
+					"host": [
+						"{{base-uri}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{api-path}}",
+						"food",
+						"summary"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
