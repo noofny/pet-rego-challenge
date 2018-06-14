@@ -204,15 +204,17 @@ This [guide from Microsoft](https://www.microsoft.com/net/learn/get-started/maco
 - Postman [(setup guide)](https://www.getpostman.com/) (optional but recommended).
 - ElasticSearch [docs](http://elk-docker.readthedocs.io/) and [(docker hub)](https://hub.docker.com/r/sebp/elk/)
 
-```text
-docker pull sebp/elk
-```
-
 # Running
 
 ## Backend - ELK Container
 
-The Docker image you pulled down in the above step pulls a pre-compiled image which is ready to run. It is quite a complex image containing multiple components hosted on multiple ports making up an entire ELK stack (Elasticsearch + Logstash + Kibana). The ports and components are as follows...
+After installing and running the Docker daemon with all defaults, pull down the ELK container as follows...
+
+```text
+docker pull sebp/elk
+```
+
+This container comes as a pre-compiled image which is ready to run. It is quite a complex image containing multiple components hosted on multiple ports making up an entire ELK stack ([E]lasticsearch + [L]ogstash + [K]ibana). The ports and components are as follows...
 
 - 5601 - This is the Kibana web interface.
 - 9200 - This is the ElasticSearch API endpoint.
