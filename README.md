@@ -214,7 +214,7 @@ After installing and running the Docker daemon with all defaults, pull down the 
 docker pull sebp/elk
 ```
 
-This container comes as a pre-compiled image which is ready to run. It is quite a complex image containing multiple components hosted on multiple ports making up an entire ELK stack ([E]lasticsearch + [L]ogstash + [K]ibana). The ports and components are as follows...
+This container comes as a pre-compiled image which is ready to run. It is quite a complex image containing multiple components hosted on multiple ports making up an entire ELK stack (**E**lasticsearch + **L**ogstash + **K**ibana). The ports and components are as follows...
 
 - 5601 - This is the Kibana web interface.
 - 9200 - This is the ElasticSearch API endpoint.
