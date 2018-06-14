@@ -202,30 +202,111 @@ This [guide from Microsoft](https://www.microsoft.com/net/learn/get-started/maco
 - DotNetCore [(setup guide)](https://www.microsoft.com/net/download/macos)
 - Docker [(setup for MacOS)](https://docs.docker.com/docker-for-mac/install/) [(setup for Windows)](https://docs.docker.com/docker-for-windows/install/)
 - Postman [(setup guide)](https://www.getpostman.com/) (optional but recommended).
-- ElasticSearch [(docker hub)](https://hub.docker.com/r/sebp/elk/)
+- ElasticSearch [docs](http://elk-docker.readthedocs.io/) and [(docker hub)](https://hub.docker.com/r/sebp/elk/)
 
 ```text
 docker pull sebp/elk
 ```
 
-
 # Running
 
-The solution will self-host using Kestral (light-weight web server bundled with dotnetcore). 
+## Backend - ELK Container
+
+The Docker image you pulled down in the above step pulls a pre-compiled image which is ready to run. It is quite a complex image containing multiple components hosted on multiple ports making up an entire ELK stack (Elasticsearch + Logstash + Kibana). The ports and components are as follows...
+
+- 5601 - This is the Kibana web interface.
+- 9200 - This is the ElasticSearch API endpoint.
+- 5044 - This is for Logstash Beats interface, which is basically a forward endpoint for ElasticSearch plugins called 'Beats'. This is a pretty cool extension to ElasticSearch if you want to [look it up.](https://www.elastic.co/products/beats)
+
+To run the container with all it's components simply type the following in a shell(Bash/Powershell)...
+
+```bash
+docker run -p 5601:5601 -p 9200:9200 -p 5044:5044 -it sebp/elk
+```
+
+If you want to name your container simply provide the optional '--name' arg as shown below, otherwise Docker will create a silly random name for you...
+
+```bash
+docker run -p 5601:5601 -p 9200:9200 -p 5044:5044 -it --name my-elk-stack sebp/elk
+```
+
+When you run this, you should see a heap of logs output to the shell and hopefully no errors! A common error is when the Docker daemon has not been assigned sufficient memory (see Troubleshooting section below).
+
+If all goes well you should now be able to hit the ElasticSearch API endpoint...
+
+```bash
+http://localhost:9200/
+```
+
+Which should respond with some JSON that looks like...
+
+```json
+{
+  "name" : "ohfrbLd",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "mKJtcGI9Sc-IIlHClg74dg",
+  "version" : {
+    "number" : "6.2.4",
+    "build_hash" : "ccec39f",
+    "build_date" : "2018-04-12T20:37:28.497551Z",
+    "build_snapshot" : false,
+    "lucene_version" : "7.2.1",
+    "minimum_wire_compatibility_version" : "5.6.0",
+    "minimum_index_compatibility_version" : "5.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+```
+
+Then you should be able to open the Kibana web interface...
+
+```bash
+http://localhost:5601/app/kibana
+```
+
+Which should show a page that looks something like...
+
+<img src="./pics/kibana-empty.png">
+
+:sunglasses: If you got this far without issues - congrats and please proceed!
+
+:rage: If you had issues getting this working, the API will just return 500 responses and nothing will work - so please see the Troubleshooting section below before proceeding.
+
+## API - DotNetCore
+
+The solution will self-host using Kestral (light-weight web server bundled with DotNetCore).
 
 If you have Visual Studio setup then you can simply open the solution and run/debug it from there. It will automatically run in a shell and allow you to debug.
 
-To compile & run the solution from command line (powershell/bash) as follows;
+Otherwise you can execute everything from a shell (Bash/Powershell).
+
+1. First change into the root of the source solution...
 
 ```bash
 cd /src/PetRego/
+```
+
+2. Next restore all package dependencies (Nuget) as follows...
+
+```bash
+dotnet restore
+```
+
+3. Next compile the source code as follows...
+
+```bash
 msbuild PetRego.sln
 ```
 
-Run the application from a command line as follows;
+4. Next change into the compiled output bin folder for the AppHost project...
 
 ```bash
 cd /src/PetRego/PetRego.AppHost/bin/Debug/netcoreapp2.0
+```
+
+5. Finally run the app as follows...
+
+```bash
 dotnet PetRego.AppHost.dll
 ```
 
@@ -240,7 +321,7 @@ Application started. Press Ctrl+C to shut down.
 
 # Usage
 
-I recommend using Postman to access the API. There are both environment and endpoint confis you can import included in this repo under the /config folder. There is a discovery endpoint which responds at the root of the API with links which should be enough to get you going. 
+I recommend using Postman to access the API. There are both environment and endpoint config you can import included in this repo under the /config folder. There is a discovery endpoint which responds at the root of the API with links which should be enough to get you going.
 
 To access the discovery endpoint simply fire a GET request off to;
 
@@ -285,6 +366,7 @@ The solution does not implement any authentication as per the brief. The simples
 ## Testing
 
 I feel there is very little test coverage currently, with more time I would like to improve this as follows;
+
 - Get the repository tests working (mocking the NEST/ElasticSearch classes proved more challenging than I expected).
 - Add unit tests for the API controllers, mocking the HttpContext so I can test the transformed metadata responses.
 - Add integration tests which would seed data before and tear it down after testing. Would probably do this in Javascript and host in Node/Mocha.
@@ -304,6 +386,39 @@ Given more time I would implement templates (or 'recipes') in the responses wher
 ## Packaging
 
 Given time I would like to containerize the solution by creating a Docker file which self hosts the application on top of a lightweight Linux/Windows image, making it easy to host anywhere.
+
+# Troubleshooting
+
+<img src="./pics/troubleshooting.png">
+
+## Backend - ELK Container
+
+You may run into problems with the ELK docker container not starting up. It is a complicated container with a lot going on behind the scenes, but I have found most issues are either due to an incorrectly configured Docker daemon or incorrectly configured container settings.
+
+Please check that your Docker daemon settings look the same as shown below...
+
+<img src="./pics/docker-settings-advanced.png">
+
+For actual container settings, an easy way to manage these is to use a tool called Kitematic. This is a tool that is bundled with the Docker setup package and is a basic GUI for managing the docker image/container states. Run the tool and select the ELK image you pulled during setup and ensure that the settings look the same as shown below...
+
+<img src="./pics/docker-kitematic.png">
+
+In addition to this, you may want to cross-check these settings directly via the shell, by typing the following...
+```bash
+docker ps list
+```
+
+Which should return a list of rows with one that looks like this...
+```bash
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                                                                              NAMES
+1db9a783877b        sebp/elk            "/usr/local/bin/star…"   2 hours ago         Up 2 hours          0.0.0.0:5044->5044/tcp, 0.0.0.0:5601->5601/tcp, 0.0.0.0:9200->9200/tcp, 9300/tcp   my-elk-stack
+```
+
+Outside this, there is a wealth of knowledge on the [Docker docs](https://docs.docker.com/engine/docker-overview/#the-docker-platform) and the author of the ELK container has a great [troubleshooting section](http://elk-docker.readthedocs.io/#troubleshooting) too.
+
+## API - DotNetCore
+
+todo - list some common issues with running DotNetCore and some links to any troubleshooting guides.
 
 # References & Inspiration
 
